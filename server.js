@@ -42,9 +42,13 @@ const rooms = [];
     }); */
 
 app.get('/', (req, res) => {
-    
-    res.render('index', { rooms: rooms })
+    res.render('login');
 });
+
+// Render index after login
+app.post('/index', (req, res) => {
+    res.render('index', { rooms: rooms });
+})
 
 /*Route till chattrum som användaren har skapat. Hänvisar till rooms i index.ejs-filen.
 Lika med users: {} eftersom vi inte har några users från början.
