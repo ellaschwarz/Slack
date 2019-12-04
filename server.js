@@ -10,7 +10,7 @@ const Message = require('./models/messages');
 const Room = require('./models/rooms');
 
 app.set('views', './views');
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');      // Set EJS as templating engine
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
