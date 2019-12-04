@@ -9,16 +9,7 @@ const MessageSchema = new Schema({
     created_at: {type: Date, default: Date.now()},
     message_body: String,
 });
-
-
-/* const RoomSchema = new Schema({
-    name: {type: String, lowercase: true, unique: true},
-    topic: String,
-    users: [],
-    messages: [],
-    created_at: Date,
-    created_by: String
-});
+/*
 
 const UserSchema = new Schema({
     username: {type: String, lowercase: true, unique: true},
@@ -28,9 +19,9 @@ const UserSchema = new Schema({
 
 // Use the method .model('Collection name', Schema) 
 const Message = mongoose.model('message', MessageSchema);
-/* const Room = mongoose.model('room', RoomSchema);
-const User = mongoose.model('user', UserSchema); */
+
+/* const User = mongoose.model('user', UserSchema); */
 
 module.exports = Message;
-/* module.exports = Room;
+/*
 module.exports = User; */
