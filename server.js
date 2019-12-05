@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
 
-
-
 const io = require('socket.io')(http);
 const port = 3000;
 
@@ -17,11 +15,11 @@ app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
     name: 'session',
     keys: ['key1', 'key2']
 }));
-app.use(bodyParser.urlencoded({extended: true}));
 
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
@@ -55,12 +53,13 @@ app.post('/', (req, res) => {
         username: req.body.username,
         email: req.body.useremail
     });
-    console.log(user);
+    users.push(user);
     req.session.username = req.body.username;
     console.log(req.session.username);
+    console.log('Users: ' + users);
     /* user.save().then(() => console.log('User saved' + user)); */
 
-    res.render('chat', { rooms: rooms});
+    res.render('chat', { rooms: rooms, user : req.session.username});
 });
 
 app.post('/room', (req, res) => {
@@ -73,36 +72,49 @@ app.post('/room', (req, res) => {
 });
 
 app.get('/:room', (req, res) => {
-    res.render('room', {roomName : req.params.room});
-    console.log(req.session.username);
+    res.render('room', {roomName : req.params.room, userName : req.session.username});
+    
 });
 
 io.on('connection', socket => {
-    console.log('connected');
 
-    socket.on('send-chat-message', (room, message) => {
-        console.log('a message has been sent');
-        // HERE WE LOOSE REQ.SESSION.USERNAME
-        console.log(req.session.username);
+    socket.on('enter-room', (room, user) => {
+        //Skickar användaren till chattrum
+        socket.join(room);
+        console.log(typeof(room));
+        console.log(user + ' You joined '+ room);
+        /* rooms[room].users[socket.id] = userTemp; */
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Probleme here.
+        socket.to(room).broadcast.emit('user-connected', user);
+    });
+
+    socket.on('send-chat-message', (room, message, user) => {
+        
         // Create message Model
         let msg = new Message({
-            
-            user: req.session.username,
+            user: user,
             room: room,
             message_body: message
         });
         console.log(msg);
+
+        socket.to(room).emit('chat message', {
+            message: message, name: user
+        });
+
         // Save message to database
-        /* msg.save().then(() => console.log('Message saved')); */
+        // msg.save().then(() => console.log('Message saved')); 
+        
+
+
+
     });
-
-
 
     socket.on('disconnect', () => {
     });
 });
-
-
 
 http.listen(port, () => console.log('Listening on port ' + port));
 
