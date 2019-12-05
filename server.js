@@ -9,6 +9,9 @@ const port = 3300;
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
 
+var userTemp = "";
+var usersArray = []; 
+
 app.set('views', './views');
 app.set('view engine', 'ejs');      // Set EJS as templating engine
 app.use(express.static('public'))
@@ -47,6 +50,11 @@ app.get('/', (req, res) => {
 
 // Render index after login
 app.post('/index', (req, res) => {
+    console.log("Username is: " + req.body.username);
+    // console.log("El pass es: " + req.body.userpass);
+    userTemp = req.body.username;
+    usersArray.push(req.body.username);
+    console.log("Users Array: " + usersArray);
     res.render('index', { rooms: rooms });
 })
 
@@ -85,11 +93,18 @@ app.get('/:room', (req, res) => {
 server.listen(port, () => console.log('Listening on port ' + port));
 
 io.on('connection', socket => {
-    socket.on('new-user', (room, name) => {
+/*     socket.on('new-user', (room, name) => {
         //Skickar användaren till chattrum
         socket.join(room)
         rooms[room].users[socket.id] = name
         socket.to(room).broadcast.emit('user-connected', name)
+    }); */
+
+    socket.on('enter-room', (room) => {
+        //Skickar användaren till chattrum
+        socket.join(room)
+        rooms[room].users[socket.id] = userTemp;
+        socket.to(room).broadcast.emit('user-connected', user);
     });
 
     //Ser till så att meddelandet bara skickas till de i det specifika chatt-rummet.
