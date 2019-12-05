@@ -1,11 +1,11 @@
 {
-  "name": "ChatTutorial",
+  "name": "Slack2",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon server.js",
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startDev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,6 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "mocha": "^6.2.2",
     "mongoose": "^5.7.13",
     "socket.io": "^2.3.0"
   },

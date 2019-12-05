@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+</head>
+
+<body>
+    <div id="room-container">
+        <% rooms.forEach(room => { %>
+        <div><%= room %></div>
+        <a href="/<%= room %>" value="<%= room %>">Join</a>
+        <% }) %>
+    </div>
+    <form action="/room" method="POST">
+        <input type="text" name="room" required>
+        <button type="submit">New room</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script  src="script.js"></script>
+</body>
+
+</html>

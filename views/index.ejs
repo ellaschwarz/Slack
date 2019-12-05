@@ -5,24 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chat App</title>
-    
+    <title>Chat</title>
 </head>
 
 <body>
-    <div id="room-container">
-        <% Object.keys(rooms).forEach(room => { %>
-        <div><%= room %></div>
-        <a href="/<%= room %>">Join</a>
-        <% }) %>
-    </div>
-    <form action="/room" method="POST">
-        <input type="text" name="room" required>
-        <button type="submit">New room</button>
+    <form action="/" method="POST">
+        <input type="text" name="username" required>
+        <input type="email" name="useremail" required>
+        <button type="submit">Login</button>
     </form>
 
-    <script src="http://localhost:3300/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script  src="script.js"></script>
 </body>
 
 </html>
