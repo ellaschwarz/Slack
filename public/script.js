@@ -8,16 +8,17 @@ const messageInput = document.getElementById('message-input');
 användaren inte behöver skriva in sitt namn varje gång den redirectas.
 Efter det kan användaren skriva ut sina meddelanden. */
 if (messageForm != null) {
-    const name = prompt('What is your name?')
+    // const name = prompt('What is your name?')
     appendMessage('You joined')
-    socket.emit('new-user', roomName, name)
+    socket.emit('enter-room', roomName)
 
     messageForm.addEventListener('submit', e => {
         e.preventDefault()
         const message = messageInput.value
         appendMessage(`You: ${message}`)
         socket.emit('send-chat-message', roomName, message)
-        messageInput.value = ''
+        messageInput.value = '';
+
     })
 };
 
