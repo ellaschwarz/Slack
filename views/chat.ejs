@@ -9,10 +9,11 @@
 </head>
 
 <body>
+    <div id="user-name-chat"><%= user %></div>
     <div id="room-container">
         <% rooms.forEach(room => { %>
-        <div><%= room %></div>
-        <a href="/<%= room %>" value="<%= room %>">Join</a>
+        <div id=""><%= room %></div>
+        <a href="/<%= room %>" value="<%= room %>" class="join-btn">Join</a>
         <% }) %>
     </div>
     <form action="/room" method="POST">

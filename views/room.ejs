@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Chat App</title>
-    <script>
-        const roomName = "<%= roomName %>";
-    </script>
 
     <style>
         body {
@@ -49,6 +46,8 @@
 </head>
 
 <body>
+    <div class="user-name" id="user-name"><%= userName %></div>
+    <div class="room-name" id="room-name"><%= roomName %></div>
     <div id="message-container"></div>
     <form id="send-container">
         <input type="text" name="" id="message-input">

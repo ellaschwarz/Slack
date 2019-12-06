@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const mongoose = require('mongoose');
+const cookieSession = require('cookie-session');
+const bodyParser = require('body-parser');
 
 const io = require('socket.io')(http);
 const port = 3000;
@@ -12,7 +14,12 @@ let db = mongoose.connection;
 app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use(express.urlencoded({ etended: true}));
+app.use(express.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2']
+}));
 
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
@@ -46,47 +53,69 @@ app.post('/', (req, res) => {
         username: req.body.username,
         email: req.body.useremail
     });
-    user.save().then(() => console.log('User saved' + user));
+    users.push(user);
+    req.session.username = req.body.username;
+    console.log(req.session.username);
+    console.log('Users: ' + users);
+    /* user.save().then(() => console.log('User saved' + user)); */
 
-    res.render('chat', { rooms: rooms});
+    res.render('chat', { rooms: rooms, user : req.session.username});
 });
 
 app.post('/room', (req, res) => {
     let room = new Room({
         name: req.body.room
     });
+    rooms.push(room.name);
     room.save().then(() => console.log('Room saved: ' + room));
-    return res.redirect('/chat');
+    io.emit('room-created', req.body.room);
+    res.render('chat', { rooms: rooms, user : req.session.username});
 });
 
 app.get('/:room', (req, res) => {
-    res.render('room', {roomName : '/:room'});
-
+    res.render('room', {roomName : req.params.room, userName : req.session.username});
+    
 });
 
 io.on('connection', socket => {
-    console.log('Someone connected ');
+    console.log('connection');
 
-    socket.on('send-chat-message', (room, message) => {
+    socket.on('enter-room', (room, user) => {
+        //Skickar användaren till chattrum
+        socket.join(room);
+        console.log(typeof(room));
+        console.log(user + ' You joined '+ room);
+        /* rooms[room].users[socket.id] = userTemp; */
+
+        ///////////////////////////////////////////////////////////////////////
+        // Probleme here.
+        socket.broadcast.emit('user-connected', user);
+    });
+
+    socket.on('send-chat-message', (room, message, user) => {
+        
         // Create message Model
         let msg = new Message({
-            user: 'rooms[room].users[socket.id]',
+            user: user,
             room: room,
             message_body: message
         });
         console.log(msg);
+
+        socket.broadcast.emit('chat message', {
+            message: message, name: user
+        });
+
         // Save message to database
-        msg.save().then(() => console.log('Message saved'));
+        // msg.save().then(() => console.log('Message saved')); 
+    
+
+
     });
-
-
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
     });
 });
-
-
 
 http.listen(port, () => console.log('Listening on port ' + port));
 
