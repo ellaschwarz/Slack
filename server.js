@@ -66,9 +66,10 @@ app.post('/room', (req, res) => {
     let room = new Room({
         name: req.body.room
     });
-    /* room.save().then(() => console.log('Room saved: ' + room)); */
+    rooms.push(room.name);
+    room.save().then(() => console.log('Room saved: ' + room));
     io.emit('room-created', req.body.room);
-    return res.redirect('/chat');
+    res.render('chat', { rooms: rooms, user : req.session.username});
 });
 
 app.get('/:room', (req, res) => {
@@ -77,6 +78,7 @@ app.get('/:room', (req, res) => {
 });
 
 io.on('connection', socket => {
+    console.log('connection');
 
     socket.on('enter-room', (room, user) => {
         //Skickar användaren till chattrum
@@ -84,10 +86,10 @@ io.on('connection', socket => {
         console.log(typeof(room));
         console.log(user + ' You joined '+ room);
         /* rooms[room].users[socket.id] = userTemp; */
-        
+
         ///////////////////////////////////////////////////////////////////////
         // Probleme here.
-        socket.to(room).broadcast.emit('user-connected', user);
+        socket.broadcast.emit('user-connected', user);
     });
 
     socket.on('send-chat-message', (room, message, user) => {
@@ -100,14 +102,13 @@ io.on('connection', socket => {
         });
         console.log(msg);
 
-        socket.to(room).emit('chat message', {
+        socket.broadcast.emit('chat message', {
             message: message, name: user
         });
 
         // Save message to database
         // msg.save().then(() => console.log('Message saved')); 
-        
-
+    
 
 
     });
