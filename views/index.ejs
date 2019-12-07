@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
     <title>Document</title>
     <style>
         .container {
@@ -26,8 +30,8 @@
     <div class="container">
 
     
-            <input type="text" name="username" placeholder="Type your name">
-            <input type="submit" value="Login">
+            <input type="text" name="username" placeholder="Type your name" id="userinput">
+            <input type="submit" value="Login" id="usernameBtn">
 
 
         <div class="room-container" id="room-container">
@@ -45,14 +49,31 @@
             <div id="message-container"></div>
 
         </div>
-        <div id="online-users">Number of online users</div>
+        <div id="online-users">Number of online users</div> <br>
+        <ul id="list"></ul>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
         var socket = io();
-        var user = 'Temporary name';
+        var user = [];
+
+
+        let userBtn = document.getElementById('usernameBtn');
+        userBtn.addEventListener('click', (event) => {
+            console.log('working');
+            let users = userinput.value;
+            socket.emit('adduser', user);
+            user.push(users);
+            console.log(user);
+            $('#list').append($('<li></li>').text(users));
+            // socket.on('adduser', function(user) {
+                
+            // })
+
+        })
+
 
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
