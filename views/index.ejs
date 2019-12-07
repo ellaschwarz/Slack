@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
     <title>Document</title>
     <style>
         .container {
@@ -32,6 +36,12 @@
 <body>
     <div id="error-container-room"></div>
     <div class="container">
+
+    
+   <!--          <input type="text" name="username" placeholder="Type your name" id="userinput">
+            <input type="submit" value="Login" id="usernameBtn"> -->
+
+
         <div class="room-container" id="room-container">
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
@@ -51,14 +61,33 @@
             <div id="message-container"></div>
 
         </div>
-        <div id="online-users">Number of online users</div>
+        <div id="online-users">Number of online users</div> <br>
+        <ul id="list"></ul>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
         var socket = io();
-        var user = 'Temporary name';
+        var user = [];
+
+
+       /*  let userBtn = document.getElementById('usernameBtn');
+        userBtn.addEventListener('click', (event) => {
+            console.log('working');
+            let users = userinput.value;
+            socket.emit('adduser', users);
+            user.push(users);
+            console.log(user);
+            // $('#list').append($('<li></li><br>').text(user));
+
+        })
+
+              socket.on('adduser', function(user) {
+                console.log('ok');
+                $('#list').append($('<li></li><br>').text(user));
+            }); */
+
 
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
@@ -99,7 +128,7 @@
             if (msg) {
                 socket.emit('msg', { message: msg, user: user, room: room });
                 // Need to append the message here for the sender (`You: ${msg}`);
-                document.getElementById('message-container').innerHTML += `You: ${msg}`;
+                document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
             }
         }
 

@@ -12,14 +12,14 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
 
+
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
 
-
-var users = [];
-var rooms = [];
-var usersOnline = 0;
+let users = [];
+let rooms = [];
+let usersOnline = 0;
 
 db.on('error', err => {
     console.log('Connection error' + err);
@@ -42,6 +42,17 @@ app.get('/', (req, res) => {
 io.on('connection', socket => {
     usersOnline++;
     io.sockets.emit('broadcastOnlineUsers', {description: usersOnline + ' users online'});
+
+    /* socket.on('adduser', function (user) {
+        socket.username = user;
+        console.log(user);
+        io.sockets.emit('adduser', user) */
+   
+
+    // socket.on('adduser', (user) => {
+    //     socket.broadcast.emit('showOnline', 'User is online: ' +user);
+    // });
+    //})
 
     socket.on('disconnect', () => {
         usersOnline--;
