@@ -18,6 +18,14 @@
             background-color: blanchedalmond;
             height: 100vh;
         }
+        #room-list{
+            height: 100%;
+            width: 100%;
+            background-color: lightblue;
+        }
+        #room-list p {
+            background-color: lightcoral;
+        }
     </style>
 </head>
 
@@ -27,7 +35,11 @@
         <div class="room-container" id="room-container">
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
-            <div id="room-list">Room list</div>
+            <div id="room-list">
+                <% rooms.forEach(element => { %>
+                    <p><%=element%></p>
+               <% }); %>
+            </div>
         </div>
 
         <div class="chat-container">
