@@ -27,26 +27,29 @@ app.get('/login', (req, res) => {
     res.render('login.ejs');
 });
 
-app.get('/register', (req, res) => {
-    res.render('register.ejs');
-});
-
-app.post('/register', (req, res) => {
-
-});
-
-/* app.post('/user-login', (req, res) => {
+app.post('/login', (req, res) => {
     console.log("Username is: " + req.body.username);
     // console.log("El pass es: " + req.body.userpass);
     var userTemp = req.body.username;
     res.redirect('/index');
 })
+
+app.get('/register', (req, res) => {
+    res.render('register.ejs');
+});
+
+
+app.post('/register', (req, res) => {
+
+});
+
+
  
 
 app.get('/index', (req, res) => {
     res.render('index')
 });
-*/
+
 
 var users = [];
 var rooms = [];
