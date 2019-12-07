@@ -20,9 +20,34 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     console.log('I was served');
-    res.sendFile(path.join(__dirname, 'public/login.html'));
+    res.render('login.ejs');
 });
-/*
+
+app.get('/login', (req, res) => {
+    res.render('login.ejs');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register.ejs');
+});
+
+app.post('/register', (req, res) => {
+
+});
+
+/* app.post('/user-login', (req, res) => {
+    console.log("Username is: " + req.body.username);
+    // console.log("El pass es: " + req.body.userpass);
+    var userTemp = req.body.username;
+    res.redirect('/index');
+})
+ 
+
+app.get('/index', (req, res) => {
+    res.render('index')
+});
+*/
+
 var users = [];
 var rooms = [];
 var usersOnline = 0;
@@ -61,7 +86,7 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data).emit('connect-to-room', 'Name of user joined the room');
     });
-});*/
+});
 
 
 
