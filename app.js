@@ -13,15 +13,16 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    res.render('index');
+    console.log('I was served');
+    res.sendFile(path.join(__dirname, 'public/login.html'));
 });
-
+/*
 var users = [];
 var rooms = [];
 var usersOnline = 0;
@@ -60,7 +61,7 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data).emit('connect-to-room', 'Name of user joined the room');
     });
-});
+});*/
 
 
 
