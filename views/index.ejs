@@ -64,15 +64,17 @@
         userBtn.addEventListener('click', (event) => {
             console.log('working');
             let users = userinput.value;
-            socket.emit('adduser', user);
+            socket.emit('adduser', users);
             user.push(users);
             console.log(user);
-            $('#list').append($('<li></li>').text(users));
-            // socket.on('adduser', function(user) {
-                
-            // })
+            // $('#list').append($('<li></li><br>').text(user));
 
         })
+
+              socket.on('adduser', function(user) {
+                console.log('ok');
+                $('#list').append($('<li></li><br>').text(user));
+            });
 
 
         // addEventlistener on room list

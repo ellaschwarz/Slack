@@ -30,12 +30,16 @@ io.on('connection', socket => {
     usersOnline++;
     io.sockets.emit('broadcastOnlineUsers', {description: usersOnline + ' users online'});
 
-    socket.on('addUser', function (user) {
+    socket.on('adduser', function (user) {
         socket.username = user;
         console.log(user);
         io.sockets.emit('adduser', user)
-    })
-    
+   
+
+    // socket.on('adduser', (user) => {
+    //     socket.broadcast.emit('showOnline', 'User is online: ' +user);
+    // });
+})
 
     socket.on('disconnect', () => {
         usersOnline--;
