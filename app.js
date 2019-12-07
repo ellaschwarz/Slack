@@ -6,6 +6,7 @@ const ejs = require('ejs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const requestPromise = require('request-promise');
+const bcrypt = require('bcryptjs');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -41,6 +42,22 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
 
+    // Encrypt password then save all info on array
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) console.error(err);
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) console.error(err);
+            users.push({
+                id: Date.now().toString(),
+                name: req.body.username,
+                email: req.body.email,
+                password: hash
+            });
+            res.redirect('/login');
+            console.log(users);
+        });
+    });
+
 });
 
 
@@ -50,8 +67,7 @@ app.get('/index', (req, res) => {
     res.render('index')
 });
 
-
-var users = [];
+var users = []; // temporary instead database
 var rooms = [];
 var usersOnline = 0;
 
