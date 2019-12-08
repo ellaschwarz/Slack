@@ -35,7 +35,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
@@ -84,9 +84,9 @@ app.get('/index', (req, res) => {
     res.render('index')
 });
 
-var users = []; // temporary instead database
-var rooms = [];
-var usersOnline = 0;
+let users = []; // temporary instead database
+let rooms = [];
+let usersOnline = 0;
 
 io.on('connection', socket => {
     usersOnline++;
