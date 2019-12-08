@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/public/stylesheets/style.css">
     <title>Document</title>
+
     <style>
         .container {
             display: flex;
@@ -33,12 +37,20 @@
             <input type="text" name="username" placeholder="Type your name" id="userinput">
             <input type="submit" value="Login" id="usernameBtn">
 
+            <div class="sidebar">
+            <div id="private-chat"><i class="fas fa-plus-circle" id="new-private"></i> Private Message</div>
+            <% for(let i = 0; i < users.length; i++){ %>
+                <div><i class="fas fa-circle"></i> <%= users[i].username %></div>
+           <% } %>
 
+        
         <div class="room-container" id="room-container">
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
             <div id="room-list">Room list</div>
         </div>
+
+    </div>
 
         <div class="chat-container">
             <div id="room-name">Room</div>
@@ -54,6 +66,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/sockejs"></script>
     <script>
         
         var socket = io();
