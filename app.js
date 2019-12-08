@@ -17,7 +17,7 @@ const session = require('express-session');
 
 const initializePassport = require('./passport-config');
 initializePassport(
-    passport, 
+    passport,
     name => users.find(user => user.name === name)
 );
 
@@ -37,7 +37,7 @@ app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('views', path.join(__dirname, './views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
@@ -49,11 +49,7 @@ app.get('/login', (req, res) => {
     res.render('login.ejs');
 });
 
-app.get('/index', (req, res) => {
-    res.render('index')
-});
-
-let users = []; // temporary instead database
+// let users = []; // temporary instead database
 let rooms = [];
 let usersOnline = 0;
 
@@ -78,61 +74,66 @@ app.post('/register', (req, res) => {
     }).then(() => {
         res.redirect('index')
     })
-    
-    // Encrypt password then save all info to array
-    // bcrypt.genSalt(10, (err, salt) => {
-    //     if (err) console.error(err);
-    //     bcrypt.hash(req.body.password, salt, (err, hash) => {
-    //         if (err) console.error(err);
-    //         users.push({
-    //             id: Date.now().toString(),
-    //             username: req.body.username,
-    //             email: req.body.email,
-    //             password: hash
-    //         });
-    //         res.redirect('/login');
-    //         console.log(users);
-    //     });
-    // });
+
+    //Encrypt password then save all info to array
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) console.error(err);
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) console.error(err);
+            res.redirect('/login');
+            
+        });
+    });
 });
- 
+
+app.get('/index', (req, res) => {
+    requestPromise('http://127.0.0.1:3500/index', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(users => {
+        res.render('index', { "users": JSON.parse(users) })
+    });
+});
+
 
 io.on('connection', socket => {
     usersOnline++;
-    io.sockets.emit('broadcastOnlineUsers', {description: usersOnline + ' users online'});
+    io.sockets.emit('broadcastOnlineUsers', { description: usersOnline + ' users online' });
 
     socket.on('adduser', function (user) {
         socket.username = user;
         console.log(user);
         io.sockets.emit('adduser', user)
-   
 
-    // socket.on('adduser', (user) => {
-    //     socket.broadcast.emit('showOnline', 'User is online: ' +user);
-    // });
-})
+
+        // socket.on('adduser', (user) => {
+        //     socket.broadcast.emit('showOnline', 'User is online: ' +user);
+        // });
+    })
 
     socket.on('disconnect', () => {
         usersOnline--;
-        io.sockets.emit('broadcastOnlineUsers', {description: usersOnline + ' users online'});
+        io.sockets.emit('broadcastOnlineUsers', { description: usersOnline + ' users online' });
     });
 
     socket.on('msg', data => {
         console.log(data);
         // Send message to users in room
-        socket.to(data.room).emit('newmsg', {msg: data.message, user: data.user});
+        socket.to(data.room).emit('newmsg', { msg: data.message, user: data.user });
     });
 
     socket.on('new-room', data => {
-        
-        if(rooms.indexOf(data) > -1) {
+
+        if (rooms.indexOf(data) > -1) {
             socket.emit('room-exists', data + 'has already been created! Try an other name');
         } else {
             rooms.push(data);
             io.emit('room-set', data);
 
         }
-        
+
     });
 
     socket.on('room-entered', data => {

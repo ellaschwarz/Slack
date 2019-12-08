@@ -21,9 +21,18 @@ server.use(bodyParser.json());
 
 //Gör vår databas tillgänglig för routen
 server.use(function (req, res, next) {
-  req.db = usersDB;
-  next();
-});
+    req.db = usersDB;
+    next();
+  });
+
+
+server.use(morgan('dev'));
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
+server.use(cookieParser());
+server.use(express.static(path.join(__dirname, 'public')));
+
+
 
 server.post('/register', (req, res) => {
     let DB = req.db;
@@ -66,12 +75,27 @@ server.post('/login', async (req, res) => {
     });
 });
 
+server.get('/index', (req, res ) => {
+    let DB = req.db;
+    let collection = DB.get('users');
+    collection.find({}, {}, function (e, users) {
+        res.json(users);
+    });
+});
 
-server.use(morgan('dev'));
-server.use(express.json());
-server.use(express.urlencoded({ extended: false }));
-server.use(cookieParser());
-server.use(express.static(path.join(__dirname, 'public')));
+//catch 404 and forward to error handler
+// server.use(function (req, res, next) {
+//     next(createError(404));
+//   });
+//   // error handler
+//   server.use(function (err, req, res, next) {
+//     // set locals, only providing error in development
+//     res.locals.message = err.message;
+//     res.locals.error = req.server.get('env') === 'development' ? err : {};
+//     // render the error page
+//     res.status(err.status || 500);
+//     res.render('error');
+//   });
 
 server.listen(3500, () => {
     console.log('listening on *:3500');
