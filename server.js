@@ -27,14 +27,24 @@ server.use(function (req, res, next) {
 
 server.post('/register', (req, res) => {
     let DB = req.db;
-    let collection = DB.get('users')
-    collection.insert({
-        "username": req.body.username,
-        "email": req.body.email,
-        "password": req.body.password
-    });
 
-    res.send('200')
+    let username = req.body.username;
+    let email = req.body.email;
+    let password = req.body.password;
+
+    let collection = DB.get('users')
+
+    collection.insert({
+        "username": username,
+        "email": email,
+        "password": password
+    }, function (err, doc) {
+        if (err) {
+            res.send('Can not add information to database')
+        } else {
+            res.send('200')
+        }
+    });  
 });
 
 //Hanterar post-request
@@ -62,3 +72,9 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
+
+server.listen(3500, () => {
+    console.log('listening on *:3500');
+});
+
+module.exports = server;

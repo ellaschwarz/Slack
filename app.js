@@ -49,6 +49,14 @@ app.get('/login', (req, res) => {
     res.render('login.ejs');
 });
 
+app.get('/index', (req, res) => {
+    res.render('index')
+});
+
+let users = []; // temporary instead database
+let rooms = [];
+let usersOnline = 0;
+
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/index',
     failureRedirect: '/login',
@@ -61,32 +69,33 @@ app.get('/register', (req, res) => {
 
 
 app.post('/register', (req, res) => {
-
-    // Encrypt password then save all info on array
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) console.error(err);
-        bcrypt.hash(req.body.password, salt, (err, hash) => {
-            if (err) console.error(err);
-            users.push({
-                id: Date.now().toString(),
-                username: req.body.username,
-                email: req.body.email,
-                password: hash
-            });
-            res.redirect('/login');
-            console.log(users);
-        });
-    });
+    requestPromise('http://127.0.0.1:3500/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req.body),
+    }).then(() => {
+        res.redirect('index')
+    })
+    
+    // Encrypt password then save all info to array
+    // bcrypt.genSalt(10, (err, salt) => {
+    //     if (err) console.error(err);
+    //     bcrypt.hash(req.body.password, salt, (err, hash) => {
+    //         if (err) console.error(err);
+    //         users.push({
+    //             id: Date.now().toString(),
+    //             username: req.body.username,
+    //             email: req.body.email,
+    //             password: hash
+    //         });
+    //         res.redirect('/login');
+    //         console.log(users);
+    //     });
+    // });
 });
  
-
-app.get('/index', (req, res) => {
-    res.render('index')
-});
-
-let users = []; // temporary instead database
-let rooms = [];
-let usersOnline = 0;
 
 io.on('connection', socket => {
     usersOnline++;
