@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <title>Document</title>
     <style>
         .container {
@@ -22,11 +20,13 @@
             background-color: blanchedalmond;
             height: 100vh;
         }
-        #room-list{
+
+        #room-list {
             height: 100%;
             width: 100%;
             background-color: lightblue;
         }
+
         #room-list p {
             background-color: lightcoral;
         }
@@ -36,19 +36,13 @@
 <body>
     <div id="error-container-room"></div>
     <div class="container">
-
-    
-   <!--          <input type="text" name="username" placeholder="Type your name" id="userinput">
-            <input type="submit" value="Login" id="usernameBtn"> -->
-
-
         <div class="room-container" id="room-container">
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
             <div id="room-list">
                 <% rooms.forEach(element => { %>
-                    <p><%=element%></p>
-               <% }); %>
+                <p><%=element%></p>
+                <% }); %>
             </div>
         </div>
 
@@ -63,31 +57,24 @@
         </div>
         <div id="online-users">Number of online users</div> <br>
         <ul id="list"></ul>
+        <div>
+            <h1 id="username"><%= name %></h1>
+            <form action="/logout?_method=DELETE" method="POST">
+                <button type="submit">Log Out</button>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        <div class="">
+            <%= onlineUsersArray %>    
+        </div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
         var socket = io();
-        var user = [];
-
-
-       /*  let userBtn = document.getElementById('usernameBtn');
-        userBtn.addEventListener('click', (event) => {
-            console.log('working');
-            let users = userinput.value;
-            socket.emit('adduser', users);
-            user.push(users);
-            console.log(user);
-            // $('#list').append($('<li></li><br>').text(user));
-
-        })
-
-              socket.on('adduser', function(user) {
-                console.log('ok');
-                $('#list').append($('<li></li><br>').text(user));
-            }); */
-
+        var users = [];
 
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
@@ -102,7 +89,7 @@
 
         socket.on('newmsg', data => {
             console.log('incoming');
-            if (user) {
+            if (users) {
                 document.getElementById('message-container').innerHTML += '<div>' + data.user + ': ' + data.msg + '</div>';
             }
         });
@@ -123,8 +110,11 @@
         });
 
         function sendMessage() {
-            var msg = document.getElementById('message').value;
-            var room = document.getElementById('room-name').innerHTML;
+            
+            let msg = document.getElementById('message').value;
+        let room = document.getElementById('room-name').innerHTML;
+        let user = document.getElementById('username').innerHTML;
+
             if (msg) {
                 socket.emit('msg', { message: msg, user: user, room: room });
                 // Need to append the message here for the sender (`You: ${msg}`);
@@ -140,8 +130,10 @@
         }
 
         function enterRoom(room) {
+            /////////////////////////////////////////////////////////////////////////
+            let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
-            socket.emit('room-entered', room);
+            socket.emit('room-entered', {room:room, user:user});
         }
 
     </script>
