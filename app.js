@@ -7,6 +7,9 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const ejs = require('ejs');
+const path = require('path');
+const bodyParser = require('body-parser');
+const requestPromise = require('request-promise');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const flash = require('express-flash');
@@ -27,6 +30,18 @@ const User = require('./models/users');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
+
+app.use(bodyParser.json());
+app.use(flash());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+//app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.set('views', './views');
