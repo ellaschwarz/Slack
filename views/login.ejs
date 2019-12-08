@@ -9,6 +9,10 @@
 </head>
 
 <body>
+
+   <h1>Login</h1>
+
+
    <form action="/login" method="post">
 
       <input type="text" name="username" placeholder="Username" required autofocus>
@@ -17,6 +21,12 @@
       <a href="/register">Register</a>
 
    </form>
+
+   
+   <% if (messages.error) { %>
+      <%= messages.error %>
+   <% } %>
+   
 <!--
    <script src="http://localhost:3300/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
