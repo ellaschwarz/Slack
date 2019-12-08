@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -6,25 +10,83 @@ const ejs = require('ejs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const requestPromise = require('request-promise');
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
+const flash = require('express-flash');
+const session = require('express-session');
+
+const initializePassport = require('./passport-config');
+initializePassport(
+    passport, 
+    name => users.find(user => user.name === name)
+);
 
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 
 app.use(bodyParser.json());
+app.use(flash());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    res.render('index');
+    console.log('I was served');
+    res.render('login.ejs');
 });
 
-let users = [];
-let rooms = [];
-let usersOnline = 0;
+app.get('/login', (req, res) => {
+    res.render('login.ejs');
+});
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/index',
+    failureRedirect: '/login',
+    failureFlash: true
+}));
+
+app.get('/register', (req, res) => {
+    res.render('register.ejs');
+});
+
+
+app.post('/register', (req, res) => {
+
+    // Encrypt password then save all info on array
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) console.error(err);
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) console.error(err);
+            users.push({
+                id: Date.now().toString(),
+                username: req.body.username,
+                email: req.body.email,
+                password: hash
+            });
+            res.redirect('/login');
+            console.log(users);
+        });
+    });
+});
+ 
+
+app.get('/index', (req, res) => {
+    res.render('index')
+});
+
+var users = []; // temporary instead database
+var rooms = [];
+var usersOnline = 0;
 
 io.on('connection', socket => {
     usersOnline++;

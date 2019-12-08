@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Slack-Login</title>
+</head>
+
+<body>
+
+   <h1>Login</h1>
+
+
+   <form action="/login" method="post">
+
+      <input type="text" name="username" placeholder="Username" required autofocus>
+      <input type="password" name="userpass" placeholder="Password" required>
+      <button type="submit">Login</button>
+      <a href="/register">Register</a>
+
+   </form>
+
+   
+   <% if (messages.error) { %>
+      <%= messages.error %>
+   <% } %>
+   
+<!--
+   <script src="http://localhost:3300/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+ -->
+
+</body>
+
+</html>
