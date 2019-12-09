@@ -16,16 +16,22 @@ const flash = require('express-flash');
 const session = require('express-session');
 
 const initializePassport = require('./passport-config');
-initializePassport(
+/* initializePassport(
     passport, 
     name => users.find(user => user.name === name)
-);
+); */
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+  )
 
-app.use(bodyParser.urlencoded({
+/* app.use(bodyParser.urlencoded({
     extended: false
-}));
+})); */
 
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }))
 app.use(flash());
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -52,6 +58,7 @@ app.get('/login', (req, res) => {
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/index',
     failureRedirect: '/login',
+    //badRequestMessage: 'Otro mensaje',
     failureFlash: true
 }));
 
@@ -60,7 +67,7 @@ app.get('/register', (req, res) => {
 });
 
 
-app.post('/register', (req, res) => {
+/* app.post('/register', (req, res) => {
 
     // Encrypt password then save all info on array
     bcrypt.genSalt(10, (err, salt) => {
@@ -77,7 +84,24 @@ app.post('/register', (req, res) => {
             console.log(users);
         });
     });
-});
+}); */
+app.post('/register', async (req, res) => {
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10)
+      users.push({
+        id: Date.now().toString(),
+        name: req.body.username,
+        email: req.body.email,
+        password: hashedPassword
+      })
+      res.redirect('/login')
+      console.log(users);
+    } catch {
+      res.redirect('/register')
+    }
+  })
+
+
  
 
 app.get('/index', (req, res) => {
