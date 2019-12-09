@@ -55,19 +55,19 @@
             <div id="message-container"></div>
 
         </div>
-        <div id="online-users">Number of online users</div> <br>
-        <ul id="list"></ul>
+        <div class="users">
+            <div id="online-users"></div> <br>
+            <div id="list-online-users">
+                
+            </div>
+        </div>
         <div>
             <h1 id="username"><%= name %></h1>
             <form action="/logout?_method=DELETE" method="POST">
                 <button type="submit">Log Out</button>
-                <button type="submit">Update</button>
             </form>
+            <button type="button">Update</button>
         </div>
-        <div class="">
-            <%= onlineUsersArray %>    
-        </div>
-
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -75,15 +75,26 @@
     <script>
         var socket = io();
         var users = [];
+        var usersOnline = [];
 
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
-            let roomClicked = e.target.innerHTML;
-            enterRoom(roomClicked);
+            if (e.target.parentElement.id == 'room-list') {
+                let roomClicked = e.target.innerHTML;
+                enterRoom(roomClicked);
+            }
         });
 
+        // addEventListener on online users list
+        
 
-        socket.on('broadcastOnlineUsers', data => {
+        socket.on('broadcastOnlineUsersConnect', data => {
+            document.getElementById('online-users').innerHTML = data.description;
+            let name = document.getElementById('username').innerHTML;
+            socket.emit('user-online', {id: data.id, name: name});
+        });
+
+        socket.on('broadcastOnlineUsersDisconnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
         });
 
@@ -109,11 +120,22 @@
             document.getElementById('message-container').innerHTML += '<div>' + data + '</div>';
         });
 
+        socket.on('all-connected-users', data => {
+            document.getElementById('list-online-users').innerHTML = '';
+            for (let user of data) {
+                let p = document.createElement('p');
+                p.innerHTML = user.name;
+                p.value = user.id;
+                document.getElementById('list-online-users').appendChild(p);
+            }
+        });
+
+
         function sendMessage() {
-            
+
             let msg = document.getElementById('message').value;
-        let room = document.getElementById('room-name').innerHTML;
-        let user = document.getElementById('username').innerHTML;
+            let room = document.getElementById('room-name').innerHTML;
+            let user = document.getElementById('username').innerHTML;
 
             if (msg) {
                 socket.emit('msg', { message: msg, user: user, room: room });
@@ -133,8 +155,11 @@
             /////////////////////////////////////////////////////////////////////////
             let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
-            socket.emit('room-entered', {room:room, user:user});
+            socket.emit('room-entered', { room: room, user: user });
+            // Clear messages
+            document.getElementById('message-container').innerHTML = '';
         }
+
 
     </script>
 </body>
