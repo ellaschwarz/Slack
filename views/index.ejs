@@ -9,7 +9,8 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/public/stylesheets/style.css">
+    <link href="/stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
     <title>Document</title>
 
     <style>
@@ -28,58 +29,70 @@
 </head>
 
 <body>
-    <div id="error-container-room"></div>
-    <div class="container">
+    <div class="slack">
+        <div id="error-container-room"></div>
+            <!-- <input type="text" name="username" placeholder="Type your name" id="userinput">
+            <input type="submit" value="Login" id="usernameBtn"> -->
 
-
-        <input type="text" name="username" placeholder="Type your name" id="userinput">
-        <input type="submit" value="Login" id="usernameBtn">
-
-        <div class="sidebar">
-            <div id="private-chat"><i class="fas fa-plus-circle" id="new-private"></i> Private Message</div>
-            <% for(let i = 0; i < users.length; i++){ %>
-            <div><i class="fas fa-circle"></i> <%= users[i].username %></div>
-            <% } %>
-
-            <div class="room-container" id="room-container">
-                <input id="addRoom" type="text">
-                <button type="button" onclick="createRoom()">Create</button>
-                <div id="room-list">Room list</div>
+            <div class="sidebar">
+                <div class="dm">
+                        <h2 class="dm__heading">
+                                <span>Direct messages <span class="dm__number">(29)</span>
+                                </span>
+                                <button class="ion-ios-plus-outline dm__add"></button>
+                              </h2>
+                <div id="private-chat"><i class="fas fa-plus-circle" id="new-private"></i> Private Message</div>
+                <% for(let i = 0; i < users.length; i++){ %>
+                <div><i class="fas fa-circle"></i> <%= users[i].username %></div>
+                <% } %>
             </div>
 
-        </div>
-
-        <div class="chat-container">
-            <div id="room-name">Room</div>
-            <div class="send-message-container">
-                <input id="message" type="text">
-                <button type="button" onclick="sendMessage()">Send</button>
+                <div class="channels">
+                <div class="room-container" id="room-container">
+                    <input id="addRoom" type="text">
+                    <button type="button" onclick="createRoom()">Create</button>
+                    <div id="room-list">Room list</div>
+                </div>
             </div>
-            <div id="message-container"></div>
 
+            </div>
+
+            <div class="main">
+                <header class="main__header">Room</header>
+                <div class="main__content">
+                    <div class="main__container">
+                <div class="send-message-container">
+                    <input id="message" type="text">
+                    <button type="button" onclick="sendMessage()">Send</button>
+                </div>
+                <div id="message-container"></div>
+            </div>
+            </div>
         </div>
-        <div id="online-users">Number of online users</div> <br>
-        <ul id="list"></ul>
+            <div id="online-users">Number of online users</div> <br>
+            <ul id="list"></ul>
+        </div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/sockejs"></script>
+    <!-- <script src="/socket.js"></script> -->
     <script>
 
         var socket = io();
         var user = [];
 
 
-        let userBtn = document.getElementById('usernameBtn');
-        userBtn.addEventListener('click', (event) => {
-            console.log('working');
-            let users = userinput.value;
-            socket.emit('adduser', users);
-            user.push(users);
-            console.log(user);
-            // $('#list').append($('<li></li><br>').text(user));
+        // let userBtn = document.getElementById('usernameBtn');
+        // userBtn.addEventListener('click', (event) => {
+        //     console.log('working');
+        //     let users = userinput.value;
+        //     socket.emit('adduser', users);
+        //     user.push(users);
+        //     console.log(user);
+        //     // $('#list').append($('<li></li><br>').text(user));
 
-        })
+        // })
 
         socket.on('adduser', function (user) {
             console.log('ok');
