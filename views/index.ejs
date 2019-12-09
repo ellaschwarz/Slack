@@ -28,6 +28,9 @@
         <div class="room-container" id="room-container">
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
+            <form action="/logout?_method=DELETE" method="POST">
+                <button type="submit">Log Out</button>
+            </form>
             <div id="room-list">Room list</div>
         </div>
 
