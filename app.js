@@ -42,26 +42,26 @@ app.use(methodOverride('_method'));
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
 
-app.get('/',checkNotAuthenticated, (req, res) => {
+app.get('/', (req, /*checkNotAuthenticated,*/ res) => {
     console.log('I was served');
     res.render('login.ejs');
 });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login', /*checkNotAuthenticated,*/ (req, res) => {
     res.render('login.ejs');
 });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+app.post('/login', /*checkNotAuthenticated,*/ passport.authenticate('local', {
     successRedirect: '/index',
     failureRedirect: '/login',
     failureFlash: true
 }));
 
-app.get('/register', checkNotAuthenticated, (req, res) => {
+app.get('/register', /*checkNotAuthenticated,*/ (req, res) => {
     res.render('register.ejs');
 });
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
+app.post('/register', /*checkNotAuthenticated,*/ async (req, res) => {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10)
       users.push({
@@ -74,6 +74,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
       console.log(users);
     } catch {
       res.redirect('/register')
+      console.log('Could not register')
     }
   }) 
 
