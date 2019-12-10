@@ -20,7 +20,23 @@ const initializePassport = require('./passport-config');
 
 initializePassport(
     passport,
-    email => users.find(user => user.email === email),
+    // email => users.find(user => user.email === email),
+    // cambio
+    mailOrUser => {
+        if (mailOrUser.search('@') < 0) {
+            console.log('It is NOT a mail: ' + mailOrUser);
+            return users.find(user => { user.name === mailOrUser;
+            console.log('user: ' + user)
+            console.log('user.name: ' + user.name)
+            console.log(user.name === mailOrUser) })
+        } else {
+            console.log('It is a mail: ' + mailOrUser);
+            return users.find(user => { user.email === mailOrUser;
+            console.log('user: ' + user)
+            console.log('user.email: ' + user.email) 
+            console.log(user.email === mailOrUser) })
+        }
+    },
     id => users.find(user => user.id === id)
   )
 
