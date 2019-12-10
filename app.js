@@ -42,7 +42,7 @@ app.use(methodOverride('_method'));
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => {
+app.get('/',checkNotAuthenticated, (req, res) => {
     console.log('I was served');
     res.render('login.ejs');
 });
