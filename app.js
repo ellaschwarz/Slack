@@ -7,6 +7,9 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const ejs = require('ejs');
+const path = require('path');
+const bodyParser = require('body-parser');
+const requestPromise = require('request-promise');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const flash = require('express-flash');
@@ -14,11 +17,22 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 
 const initializePassport = require('./passport-config');
+// initializePassport(
+//     passport,
+//     email => users.find(user => user.email === email),
+//     id => users.find(user => user.id === id)
+// );
+
 initializePassport(
     passport,
-    email => users.find(user => user.email === email),
+    // Look after for an '@' on input to decide how to compare: username or email
+    mailOrUser => 
+        mailOrUser.search('@') < 0 ?
+        users.find(user => user.name === mailOrUser) :
+        users.find(user => user.email === mailOrUser),
+
     id => users.find(user => user.id === id)
-);
+  )
 
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
@@ -68,22 +82,35 @@ db.on('error', err => {
 
 });
 
-app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.username, rooms: rooms, });
+app.get('/', /*checkAuthenticated,*/ (req, res) => {
+    res.render('index', { name: req.user.username, rooms: rooms, });
 
 });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+//TESTA ATT MERGA DESSA TVÅ OM DET EJ GÅR
+
+// app.get('/', (req, /*checkNotAuthenticated,*/ res) => {
+//     console.log('I was served');
+//     res.render('login.ejs');
+// });
+
+app.get('/login', /*checkNotAuthenticated,*/ (req, res) => {
     res.render('login.ejs');
 });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+app.post('/login', /*checkNotAuthenticated,*/ passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
 }));
 
-app.get('/register', checkNotAuthenticated, (req, res) => {
+// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+//     successRedirect: '/',
+//     failureRedirect: '/login',
+//     failureFlash: true
+// }));
+
+app.get('/register', /*checkNotAuthenticated,*/ (req, res) => {
     res.render('register.ejs');
 });
 
@@ -102,10 +129,30 @@ app.post('/register', async (req, res) => {
     }
 });
 
+app.get('/index', checkAuthenticated, (req, res) => {
+    res.render('index')
+});
+
 app.delete('/logout', (req, res) => {
     req.logOut();
     res.redirect('/login');
 });
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/index');
+    }
+
+    next();
+}
 
 
 
