@@ -20,19 +20,11 @@ const initializePassport = require('./passport-config');
 
 initializePassport(
     passport,
-    // email => users.find(user => user.email === email),
-
+    // Look after for an '@' on input to decide how to compare: username or email
     mailOrUser => 
         mailOrUser.search('@') < 0 ?
         users.find(user => user.name === mailOrUser) :
         users.find(user => user.email === mailOrUser),
-
-/*     mailOrUser => {
-        if (mailOrUser.search('@') < 0) 
-            users.find(user => user.name === mailOrUser);
-        else
-            users.find(user => user.email === mailOrUser);
-    }, */
 
     id => users.find(user => user.id === id)
   )
