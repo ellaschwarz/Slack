@@ -2,7 +2,7 @@ const httpError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
+const logger = require('morgan');
 const server = express();
 
 
@@ -10,6 +10,7 @@ let mongo = require("mongodb");
 let monk = require("monk");
 let bodyParser = require("body-parser");
 var usersDB = monk('localhost:27017/users');
+
 
 
 server.use(bodyParser.urlencoded({
