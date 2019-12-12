@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Login</title>
 </head>
 <body>
 
@@ -12,10 +12,8 @@
 
         <form action="/login" method="POST">
         <div>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="user-or-email" required>
-            <label for="password">Password</label>
-            <input type="text" id="password" name="password" required>
+            <input type="text" name="user-or-email" placeholder="Username or Email" id="email" required autofocus>
+            <input type="password" name="password" placeholder="Password" id="password" required>
             <button type="submit">Login</button>
             <a href="/register">Register</a>
         </div>
@@ -24,9 +22,7 @@
 
         <% if (messages.error) { %>
             <%= messages.error %>
-            <% } %>
-
-
+        <% } %>
        
     
 </body>
