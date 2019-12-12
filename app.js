@@ -15,6 +15,17 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+
+const Message = require('./models/messages');
+const Room = require('./models/rooms');
+const User = require('./models/users');
+
+const mongoose = require('mongoose');
+const mongo = require("mongodb");
+const monk = require("monk");
+const messageDB = monk('localhost:27017/message');
 
 const initializePassport = require('./passport-config');
 // initializePassport(
@@ -34,17 +45,27 @@ initializePassport(
     id => users.find(user => user.id === id)
   )
 
-const Message = require('./models/messages');
-const Room = require('./models/rooms');
-const User = require('./models/users');
 
-const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
-let db = mongoose.connection;
+let database = mongoose.connection;
+
+app.use(bodyParser.urlencoded({
+    extended: false
+  }));
+  
+  
+  app.use(bodyParser.json());
+  
+  //Gör vår databas tillgänglig för routen
+  app.use(function (req, res, next) {
+      req.db = messageDB;
+      next();
+    });
 
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
+
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(session({
@@ -56,6 +77,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 let users = [];
 /* let usersOnlineArray = []; */
@@ -63,7 +89,7 @@ let rooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
 
-db.on('error', err => {
+database.on('error', err => {
     console.log('Connection error' + err);
 }).once('open', () => {
     console.log('Connection has been made to database');
@@ -71,15 +97,62 @@ db.on('error', err => {
         result.forEach(user => {
             users.push(user);
         });
-
     });
+
     Room.find({}).then(result => {
         result.forEach(room => {
             rooms.push(room.name);
         });
-
     });
+});
 
+app.post('/message', (req, res) => {
+    let DB = req.db;
+
+    let user = req.body.username;
+    let room = req.body.room;
+    let message_body = req.body.message_body;
+
+    let collection = DB.get('messages')
+
+    collection.insert({
+        "user": user,
+        "room": room,
+        "message_body": message_body
+    }, function (err, doc) {
+        if (err) {
+            res.send('Can not add information to database')
+        } else {
+            res.send('200')
+        }
+    });  
+});
+
+// //Hanterar post-request
+// app.post('/message', async (req, res) => {
+//     let DB = req.db;
+//     let collection = DB.get('messages');
+//     collection.find(
+//         {'username': req.body.username},
+//         {}).then(user => {
+//             if(user[0]) {
+//                 if(user[0].password == req.body.password) {
+//                     res.send(true)
+//                 } else {
+//                     res.send(false)
+//                 } 
+//             } else {
+//                 res.send(false)
+//             }
+//     });
+// });
+
+app.get('/message', (req, res ) => {
+    let DB = req.db;
+    let collection = DB.get('messages');
+    collection.find({}, {}, function (e, messages) {
+        res.json(messages);
+    });
 });
 
 app.get('/', /*checkAuthenticated,*/ (req, res) => {
@@ -142,7 +215,6 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-
     res.redirect('/login');
 }
 
@@ -150,7 +222,6 @@ function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/index');
     }
-
     next();
 }
 
@@ -229,6 +300,20 @@ io.on('connection', socket => {
         message.save().then(() => console.log('Message saved'));
     });
 
+    socket.on('private-msg', data => {
+
+        // Send message to users in room
+        io.to(`${socketId}`).emit('newmsg', { msg: data.message, user: data.user });
+
+        let message = new Message({
+            user: data.user,
+            room: data.room,
+            message_body: data.message
+        });
+
+        message.save().then(() => console.log('Message saved'));
+    });
+
     socket.on('new-room', data => {
 
         if (rooms.indexOf(data) > -1) {
@@ -292,3 +377,5 @@ function findClientsSocket(roomID, namespace) {
 http.listen(3000, () => {
     console.log('listening on *:3000');
 });
+
+
