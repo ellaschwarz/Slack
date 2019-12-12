@@ -86,6 +86,12 @@
         });
 
         // addEventListener on online users list
+        document.getElementById('list-online-users').addEventListener('click', e => {
+            if (e.target.parentElement.id == 'list-online-users') {
+                let userClicked = e.target.innerHTML;
+                startPrivate(userClicked);
+            }
+        });
         
 
         socket.on('broadcastOnlineUsersConnect', data => {
@@ -155,6 +161,15 @@
             /////////////////////////////////////////////////////////////////////////
             let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
+            socket.emit('room-entered', { room: room, user: user });
+            // Clear messages
+            document.getElementById('message-container').innerHTML = '';
+        }
+
+        function startPrivate(user) {
+            /////////////////////////////////////////////////////////////////////////
+            let user = document.getElementById('username').innerHTML;
+            document.getElementById('room-name').innerHTML = user;
             socket.emit('room-entered', { room: room, user: user });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
