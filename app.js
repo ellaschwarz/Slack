@@ -28,7 +28,7 @@ initializePassport(
     // Look after for an '@' on input to decide how to compare: username or email
     mailOrUser => 
         mailOrUser.search('@') < 0 ?
-        users.find(user => user.name === mailOrUser) :
+        users.find(user => user.username === mailOrUser) :
         users.find(user => user.email === mailOrUser),
 
     id => users.find(user => user.id === id)
