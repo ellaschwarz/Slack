@@ -39,7 +39,7 @@ initializePassport(
     // Look after for an '@' on input to decide how to compare: username or email
     mailOrUser => 
         mailOrUser.search('@') < 0 ?
-        users.find(user => user.name === mailOrUser) :
+        users.find(user => user.username === mailOrUser) :
         users.find(user => user.email === mailOrUser),
 
     id => users.find(user => user.id === id)
@@ -193,11 +193,12 @@ app.post('/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         let user = new User({
-            username: req.body.name,
+            username: req.body.username,
             email: req.body.email,
             password: hashedPassword
         });
         user.save().then(() => console.log('User saved'));
+        console.log('User: ' + users)   // Borrar
         res.redirect('/login');
     } catch {
         res.redirect('/register');
