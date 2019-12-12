@@ -25,7 +25,7 @@ const User = require('./models/users');
 const mongoose = require('mongoose');
 const mongo = require("mongodb");
 const monk = require("monk");
-const messageDB = monk('localhost:27017/message');
+const messageDB = monk('localhost:27017/Slack');
 
 const initializePassport = require('./passport-config');
 // initializePassport(
@@ -151,7 +151,9 @@ app.get('/message', (req, res ) => {
     let DB = req.db;
     let collection = DB.get('messages');
     collection.find({}, {}, function (e, messages) {
+        console.log(messages);
         res.json(messages);
+        
     });
 });
 
