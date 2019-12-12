@@ -93,11 +93,12 @@ db.on('error', err => {
     console.log('Connection error' + err);
 }).once('open', () => {
     console.log('Connection has been made to database');
-    User.find({}).then(result => {
+    loadMongoUsersIntoArray();
+/*     User.find({}).then(result => {
         result.forEach(user => {
             users.push(user);
         });
-    });
+    }); */
 
     Room.find({}).then(result => {
         result.forEach(room => {
@@ -197,8 +198,10 @@ app.post('/register', async (req, res) => {
             email: req.body.email,
             password: hashedPassword
         });
-        user.save().then(() => console.log('User saved'));
-        console.log('User: ' + users)   // Borrar
+        user.save().then(() => { 
+            console.log('User saved');
+            loadMongoUsersIntoArray();
+        });        
         res.redirect('/login');
     } catch {
         res.redirect('/register');
@@ -226,6 +229,16 @@ function checkNotAuthenticated(req, res, next) {
         return res.redirect('/index');
     }
     next();
+}
+
+function loadMongoUsersIntoArray() {
+    User.find({}).then(result => {
+        users = [];
+        result.forEach(user => {
+            users.push(user);
+        });
+        console.log('Users on array: ' + users.length) // Delete
+    });
 }
 
 
