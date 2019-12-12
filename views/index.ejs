@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <!-- <link rel="stylesheet" href="stylesheets/style.css"> -->
     <title>Document</title>
     <style>
         .container {
@@ -34,6 +35,7 @@
 </head>
 
 <body>
+    <div class="slack">
     <div id="error-container-room"></div>
     <div class="container">
         <div class="room-container" id="room-container">
@@ -69,6 +71,7 @@
             <button type="button">Update</button>
         </div>
     </div>
+</div>
 
     <script src="/socket.io/socket.io.js"></script>
 
@@ -166,14 +169,14 @@
             document.getElementById('message-container').innerHTML = '';
         }
 
-        function startPrivate(user) {
-            /////////////////////////////////////////////////////////////////////////
-            let user = document.getElementById('username').innerHTML;
-            document.getElementById('room-name').innerHTML = user;
-            socket.emit('room-entered', { room: room, user: user });
-            // Clear messages
-            document.getElementById('message-container').innerHTML = '';
-        }
+        // function startPrivate(user) {
+        //     /////////////////////////////////////////////////////////////////////////
+        //     let user = document.getElementById('username').innerHTML;
+        //     document.getElementById('room-name').innerHTML = user;
+        //     socket.emit('room-entered', { room: room, user: user });
+        //     // Clear messages
+        //     document.getElementById('message-container').innerHTML = '';
+        // }
 
 
     </script>

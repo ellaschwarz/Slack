@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700,900");
+:root {
+  --column-bg: #ae0001;
+  --menu-bg-hover: #680001;
+  --active-item: #D3A625;
+  --active-item-text: #680001;
+  --hover-item: #BE0002;
+  --text-color: #FFFFFF;
+  --active-presence: #00FFBA;
+  --mention-badge: #DE4C0D;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 17px;
+  font-family: "Lato", Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #555459;
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #2C2D30;
+}
+
+strong {
+  font-weight: 700;
+}
+
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button:focus, button:hover, button:active {
+  outline: none;
+}
+
+.slack {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@supports (display: grid) {
+  .slack {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 75px 250px 1fr;
+        grid-template-columns: 75px 250px 1fr;
+    -ms-grid-rows: 1fr;
+        grid-template-rows: 1fr;
+  }
+}
+/*# sourceMappingURL=style.css.map */
