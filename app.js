@@ -47,7 +47,7 @@ initializePassport(
 
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
-let database = mongoose.connection;
+let db = mongoose.connection;
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -89,7 +89,7 @@ let rooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
 
-database.on('error', err => {
+db.on('error', err => {
     console.log('Connection error' + err);
 }).once('open', () => {
     console.log('Connection has been made to database');

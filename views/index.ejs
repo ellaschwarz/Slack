@@ -36,9 +36,19 @@
 
 <body>
     <div class="slack">
+            <div>
+                    <h1 id="username"><%= name %></h1>
+                    <form action="/logout?_method=DELETE" method="POST">
+                        <button type="submit">Log Out</button>
+                    </form>
+                    <button type="button">Update</button>
+                </div>
+
     <div id="error-container-room"></div>
     <div class="container">
+        <div class="sidebar">
         <div class="room-container" id="room-container">
+            <h2>Channels</h2>
             <input id="addRoom" type="text">
             <button type="button" onclick="createRoom()">Create</button>
             <div id="room-list">
@@ -48,29 +58,27 @@
             </div>
         </div>
 
-        <div class="chat-container">
-            <div id="room-name">Room</div>
-            <div class="send-message-container">
-                <input id="message" type="text">
-                <button type="button" onclick="sendMessage()">Send</button>
-            </div>
-            <div id="message-container"></div>
-
-        </div>
         <div class="users">
+            <h2>Direct Messages</h2>
             <div id="online-users"></div> <br>
             <div id="list-online-users">
                 
             </div>
         </div>
-        <div>
-            <h1 id="username"><%= name %></h1>
-            <form action="/logout?_method=DELETE" method="POST">
-                <button type="submit">Log Out</button>
-            </form>
-            <button type="button">Update</button>
-        </div>
     </div>
+        <div class="chat-container">
+            <div id="room-name"><h1>Room</h1></div>
+
+            <div id="message-container"></div>
+            <div class="send-message-container">
+                <input id="message" type="text">
+                <button type="button" onclick="sendMessage()">Send</button>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
     <script src="/socket.io/socket.io.js"></script>
