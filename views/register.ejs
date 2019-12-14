@@ -1,13 +1,43 @@
-<h1>Register</h1>
-<form action="/register" method="POST">
-<div>
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" required>
-    <label for="email">Email</label>
-    <input type="text" id="email" name="email" required>
-    <label for="password">Password</label>
-    <input type="text" id="password" name="password" required>
-    <button type="submit">Register</button>
-</div>
-</form>
-<a href="/login">Login</a>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="stylesheets/sign.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <div class="panel panel--static">
+        <div class="panel__content right">
+            <h1 class="panel__heading">Have an account?</h1>
+            <p class="panel__copy">Click on the button to login with your account.</p>
+            <button type="button" class="btn btn--secondary login" href="/login"> <a href="/login">Login</a></button>
+        </div>
+        <div class="panel panel--sliding">
+            <div class="panel__content signup">
+                <h1 class="panel__heading">Sign up</h1>
+
+                <form action="/register" method="POST" id="signup">
+                    
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="input input--name" name="name" required>
+                        <label for="email">Email</label>
+                        <input type="text" id="email" class="input input--email" name="email" required>
+                        <label for="password">Password</label>
+                        <input type="text" id="password" class="input input--password" name="password" required>
+                        <button type="submit" class="btn btn--primary">Sign up</button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
