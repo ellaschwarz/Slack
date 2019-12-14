@@ -1,7 +1,4 @@
-/** [Fonts] *****/
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
-/** [Vars] *****/
-/** [Panels] *****/
 /** [Buttons] *****/
 /** [Content] *****/
 /** [Base styling] *****/
@@ -50,9 +47,6 @@ body {
 }
 
 .panel--sliding {
-  position: absolute;
-  top: -5%;
-  left: 4%;
   width: 50%;
   height: 110%;
   background: #fefefe;

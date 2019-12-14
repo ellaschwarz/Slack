@@ -1,10 +1,6 @@
-/** [Fonts] *****/
 
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
 
-/** [Vars] *****/
-
-/** [Panels] *****/
 $width-panel-static: 80%;
 $height-panel-static: 60%;
 $background-panel-static: rgba(0, 0, 0, 0.6);
@@ -75,9 +71,6 @@ body {
     }
     
     &--sliding {
-        position: absolute;
-        top: -$offset-top-panel-sliding;
-        left: $offset-left-panel-sliding;
         width: $width-panel-sliding;
         height: $height-panel-sliding;
         background: $background-panel-sliding;
