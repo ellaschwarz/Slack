@@ -267,10 +267,10 @@ io.on('connection', socket => {
             usersOnlineArray2.push(userOnline);
         });
         
-        console.log(usersOnlineArray2);
-        console.log('----------------------------');
+        // console.log(usersOnlineArray2);
+        // console.log('----------------------------');
         io.sockets.emit('all-connected-users', usersOnlineArray2);
-    }, 5000);
+    }, 1000);
 
 
     });
@@ -303,7 +303,7 @@ io.on('connection', socket => {
     });
 
     socket.on('private-msg', data => {
-
+        // let socketId = users[data.receiver];
         // Send message to users in room
         io.to(`${socketId}`).emit('newmsg', { msg: data.message, user: data.user });
 
