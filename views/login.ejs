@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="stylesheets/sign.css">
-    <title>Document</title>
+    <title>Login</title>
 </head>
 
 <body>
@@ -17,7 +17,13 @@
             <h1 class="panel__heading">Don't have an account?</h1>
             <p class="panel__copy">Create one now and start chatting with your friends!</p>
             <button type="button" href="/register" class="btn btn--secondary signup"><a href="/register">Sign up</a></button>
-        </div>
+        <form action="/login" method="POST">
+        <!-- <div>
+            <input type="text" name="user-or-email" placeholder="Username or Email" id="email" required autofocus>
+            <input type="password" name="password" placeholder="Password" id="password" required>
+            <button type="submit">Login</button>
+            <a href="/register">Register</a>
+        </div> -->
 
         <div class="panel__content login">
             <h1 class="panel__heading">Log in</h1>
@@ -25,10 +31,10 @@
             <form action="/login" method="POST" id="login">
 
                 <label for="email">Email</label>
-                <input type="text" id="email" name="user-or-email" placeholder="Username or email" required
+                <input type="text" id="email" name="user-or-email" placeholder="Username or Email" required autofocus
                     class="input input--email">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required class="input input--password">
+                <input type="password" id="password" name="password" required class="input input--password" placeholder="Password">
                 <button type="submit" class="btn btn--primary">Login</button>
                 <!-- <a href="/register">Register</a> -->
             </form>

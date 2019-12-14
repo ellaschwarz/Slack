@@ -25,11 +25,11 @@
                 <form action="/register" method="POST" id="signup">
                     
                         <label for="name">Name</label>
-                        <input type="text" id="name" class="input input--name" name="name" required>
+                        <input type="text" id="name" class="input input--name" name="name" placeholder="Username" required autofocus>
                         <label for="email">Email</label>
-                        <input type="text" id="email" class="input input--email" name="email" required>
+                        <input type="text" id="email" class="input input--email" name="email" placeholder="Email" required>
                         <label for="password">Password</label>
-                        <input type="text" id="password" class="input input--password" name="password" required>
+                        <input type="text" id="password" class="input input--password" name="password" placeholder="Password" required>
                         <button type="submit" class="btn btn--primary">Sign up</button>
                     
                 </form>
@@ -41,3 +41,13 @@
 </body>
 
 </html>
+<!-- <h1>Register</h1>
+<form action="/register" method="POST">
+<div>
+    <input type="text" name="username" placeholder="Username" required autofocus>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Register</button>
+</div>
+</form>
+<a href="/login">Login</a> -->
