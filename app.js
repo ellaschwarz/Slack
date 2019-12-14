@@ -316,6 +316,7 @@ io.on('connection', socket => {
         message.save().then(() => console.log('Message saved'));
     });
 
+    //Privte message
     socket.on('private-msg', data => {
         // let socketId = users[data.receiver];
         // Send message to users in room
