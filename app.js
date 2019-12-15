@@ -28,40 +28,32 @@ const monk = require("monk");
 const messageDB = monk('localhost:27017/Slack');
 
 const initializePassport = require('./passport-config');
-// initializePassport(
-//     passport,
-//     email => users.find(user => user.email === email),
-//     id => users.find(user => user.id === id)
-// );
 
 initializePassport(
     passport,
     // Look after for an '@' on input to decide how to compare: username or email
-    mailOrUser => 
+    mailOrUser =>
         mailOrUser.search('@') < 0 ?
-        users.find(user => user.username === mailOrUser) :
-        users.find(user => user.email === mailOrUser),
+            users.find(user => user.username === mailOrUser) :
+            users.find(user => user.email === mailOrUser),
 
     id => users.find(user => user.id === id)
-  )
-
+);
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
 
 app.use(bodyParser.urlencoded({
     extended: false
-  }));
-  
-  
-  app.use(bodyParser.json());
-  
-  //Gör vår databas tillgänglig för routen
-  app.use(function (req, res, next) {
-      req.db = messageDB;
-      next();
-    });
+}));
 
+app.use(bodyParser.json());
+
+//Gör vår databas tillgänglig för routen
+app.use(function (req, res, next) {
+    req.db = messageDB;
+    next();
+});
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -82,7 +74,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 let users = [];
 /* let usersOnlineArray = []; */
 let rooms = [];
@@ -94,11 +85,11 @@ db.on('error', err => {
 }).once('open', () => {
     console.log('Connection has been made to database');
     loadMongoUsersIntoArray();
-/*     User.find({}).then(result => {
-        result.forEach(user => {
-            users.push(user);
-        });
-    }); */
+    /*     User.find({}).then(result => {
+            result.forEach(user => {
+                users.push(user);
+            });
+        }); */
 
     Room.find({}).then(result => {
         result.forEach(room => {
@@ -126,7 +117,7 @@ app.post('/message', (req, res) => {
         } else {
             res.send('200')
         }
-    });  
+    });
 });
 
 // //Hanterar post-request
@@ -148,29 +139,22 @@ app.post('/message', (req, res) => {
 //     });
 // });
 
-app.get('/message', (req, res ) => {
+app.get('/message', (req, res) => {
     let DB = req.db;
     let collection = DB.get('messages');
     collection.find({}, {}, function (e, messages) {
         console.log(messages);
         res.json(messages);
-        
+
     });
 });
 
-app.get('/', /*checkAuthenticated,*/ (req, res) => {
+app.get('/', checkAuthenticated, (req, res) => {
     res.render('index', { name: req.user.username, rooms: rooms, });
 
 });
 
-//TESTA ATT MERGA DESSA TVÅ OM DET EJ GÅR
-
-// app.get('/', (req, /*checkNotAuthenticated,*/ res) => {
-//     console.log('I was served');
-//     res.render('login.ejs');
-// });
-
-app.get('/login', /*checkNotAuthenticated,*/ (req, res) => {
+app.get('/login', /*checkNotAuthenticated,*/(req, res) => {
     res.render('login.ejs');
 });
 
@@ -186,7 +170,7 @@ app.post('/login', /*checkNotAuthenticated,*/ passport.authenticate('local', {
 //     failureFlash: true
 // }));
 
-app.get('/register', /*checkNotAuthenticated,*/ (req, res) => {
+app.get('/register', /*checkNotAuthenticated,*/(req, res) => {
     res.render('register.ejs');
 });
 
@@ -198,10 +182,10 @@ app.post('/register', async (req, res) => {
             email: req.body.email,
             password: hashedPassword
         });
-        user.save().then(() => { 
+        user.save().then(() => {
             console.log('User saved');
             loadMongoUsersIntoArray();
-        });        
+        });
         res.redirect('/login');
     } catch {
         res.redirect('/register');
@@ -241,8 +225,6 @@ function loadMongoUsersIntoArray() {
     });
 }
 
-
-
 io.on('connection', socket => {
     /* socket.name = 'Random name';
     console.log(socket.name);
@@ -256,7 +238,7 @@ io.on('connection', socket => {
         });
         console.log('----------------------------');
     }, 5000); */
-    
+
     usersOnline++;
     io.sockets.emit('broadcastOnlineUsersConnect', { description: usersOnline + ' users online', id: socket.id });
 
@@ -266,27 +248,24 @@ io.on('connection', socket => {
             id: data.id
         }
         socket.name = user.name;
-    
-    // Check for online sockets
-    setInterval(function() {
-        usersOnlineArray2 = [];
-        let clientsOnline = findClientsSocket();
-        clientsOnline.forEach(function(arrayItem) {
-            let y = arrayItem.name;
-            let x = arrayItem.id;
-            let userOnline = {
-                name: y,
-                id: x
-            }
-            usersOnlineArray2.push(userOnline);
-        });
-        
-        // console.log(usersOnlineArray2);
-        // console.log('----------------------------');
-        io.sockets.emit('all-connected-users', usersOnlineArray2);
-    }, 1000);
 
-
+        // Check for online sockets
+        setInterval(function () {
+            usersOnlineArray2 = [];
+            let clientsOnline = findClientsSocket();
+            clientsOnline.forEach(function (arrayItem) {
+                let y = arrayItem.name;
+                let x = arrayItem.id;
+                let userOnline = {
+                    name: y,
+                    id: x
+                }
+                usersOnlineArray2.push(userOnline);
+            });
+            // console.log(usersOnlineArray2);
+            // console.log('----------------------------');
+            io.sockets.emit('all-connected-users', usersOnlineArray2);
+        }, 1000);
     });
 
     socket.on('disconnect', () => {
@@ -336,7 +315,6 @@ io.on('connection', socket => {
         if (rooms.indexOf(data) > -1) {
             socket.emit('room-exists', data + 'has already been created! Try an other name');
         } else {
-
             rooms.push(data);
             io.emit('room-set', data);
             let room = new Room({
@@ -346,7 +324,6 @@ io.on('connection', socket => {
                 console.log('Room saved: ' + room);
             });
         }
-
     });
 
     socket.on('room-entered', data => {
@@ -356,7 +333,6 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
     });
-
 });
 
 function checkAuthenticated(req, res, next) {

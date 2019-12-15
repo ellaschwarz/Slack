@@ -10,124 +10,104 @@
     <link rel="stylesheet" href="stylesheets/style.css">
     <script src="https://kit.fontawesome.com/3a12e18fd4.js" crossorigin="anonymous"></script>
     <title>Document</title>
-    <style>
-        /* .container {
-            display: flex;
-            justify-content: space-between;
-        }
 
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            background-color: blanchedalmond;
-            height: 100vh;
-        }
-
-        #room-list {
-            height: 100%;
-            width: 100%;
-            background-color: lightblue;
-        }
-
-        #room-list p {
-            background-color: lightcoral;
-        } */
-    </style>
 </head>
 
 <body>
     <div class="slack">
         <div class="profilebar">
-                <div class="photo"
+            <div class="photo"
                 style="background-image: url(https://cdn2.iconfinder.com/data/icons/facebook-51/32/FACEBOOK_LINE-01-512.png);">
                 <div class="online"></div>
             </div>
             <h1 id="username"><%= name %></h1>
+            <button type="button">Edit profile</button>
             <form action="/logout?_method=DELETE" method="POST">
                 <button type="submit">Log Out</button>
             </form>
-            <button type="button">Update</button>
+
         </div>
 
-        
+
         <!-- <div class="container"> -->
-            <div class="sidebar">
-                <div class="room-container" id="room-container">
-                    <h2>Channels</h2>
-                    <input id="addRoom" type="text" placeholder="Type a new room name">
-                    <button type="button" onclick="createRoom()">Add</button>
-                    <div id="error-container-room"></div>
-                    <div id="room-list">
-                        <% rooms.forEach(element => { %>
-                        <p><%=element%></p>
-                        <% }); %>
-                    </div>
-                </div>
-
-                <div class="users">
-                    <h2>Direct Messages</h2>
-                    <div id="online-users"></div> <br>
-                    <div id="list-online-users">
-
-                    </div>
+        <div class="sidebar">
+            <div class="room-container" id="room-container">
+                <h2>Channels</h2>
+                <input id="addRoom" type="text" placeholder="Type a new room name">
+                <button type="button" onclick="createRoom()">Add</button>
+                <div id="error-container-room"></div>
+                <div id="room-list">
+                    <% rooms.forEach(element => { %>
+                    <p><%=element%></p>
+                    <% }); %>
                 </div>
             </div>
-            <section class="chat">
-                <div class="chat-container">
-                    <div class="header-chat">
-                        <i class="icon fa fa-user-o" aria-hidden="true"></i>
-                        <div id="room-name">
-                            <h1>Room</h1>
-                        </div>
-                        <i class="icon clickable fa fa-ellipsis-h right" aria-hidden="true"></i>
-                    </div>
 
+            <div class="users">
+                <h2>Direct Messages</h2>
+                <div id="online-users"></div> <br>
+                <div id="list-online-users">
 
-                    <div id="message-container"></div>
-                    <div class="messages-chat">
-                        <div class="message">
-                            <div class="photo"
-                                style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
-                                <div class="online"></div>
-                            </div>
-                            <p class="text"> </p>
-                        </div>
-                        <div class="message text-only">
-                            <p class="text"> </p>
-                        </div>
-                        <p class="time"> 14h58</p>
-                        <div class="message text-only">
-                            <div class="response">
-                                <p class="text"> </p>
-                            </div>
-                        </div>
-                        <div class="message text-only">
-                            <div class="response">
-                                <p class="text"> </p>
-                            </div>
-                        </div>
-                        <p class="response-time time"> 15h04</p>
-                        <div class="message">
-                            <div class="photo"
-                                style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
-                                <div class="online"></div>
-                            </div>
-                            <p class="text"></p>
-                        </div>
-                        <p class="time"> 15h09</p>
-                    </div>
-                    <span id="typing"></span>
-                    <div class="footer-chat" class="send-message-container">
-                        
-                            <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"></i>
-                            <input id="message" class="write-message" placeholder="Type your message here" type="text">
-                            <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
-                            <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></button>
-                    
-                    </div>
                 </div>
-            </section>
-         </div> 
+            </div>
+        </div>
+        <section class="chat">
+            <div class="chat-container">
+                <div class="header-chat">
+                    <i class="icon fa fa-user-o" aria-hidden="true"></i>
+                    <div id="room-name">
+                        <h1>Room</h1>
+                    </div>
+                    <i class="icon clickable fa fa-ellipsis-h right" aria-hidden="true"></i>
+                </div>
+
+
+                <div id="message-container"></div>
+                <div class="messages-chat">
+                    <div class="message">
+                        <div class="photo"
+                            style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
+                            <div class="online"></div>
+                        </div>
+                        <p class="text"> </p>
+                    </div>
+                    <div class="message text-only">
+                        <p class="text"> </p>
+                    </div>
+                    <p class="time"> 14h58</p>
+                    <div class="message text-only">
+                        <div class="response">
+                            <p class="text"> </p>
+                        </div>
+                    </div>
+                    <div class="message text-only">
+                        <div class="response">
+                            <p class="text"> </p>
+                        </div>
+                    </div>
+                    <p class="response-time time"> 15h04</p>
+                    <div class="message">
+                        <div class="photo"
+                            style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
+                            <div class="online"></div>
+                        </div>
+                        <p class="text"></p>
+                    </div>
+                    <p class="time"> 15h09</p>
+                </div>
+                <span id="typing"></span>
+                <div class="footer-chat" class="send-message-container">
+
+                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"></i>
+                    <input id="message" class="write-message" placeholder="Type your message here" type="text">
+                    <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
+                    <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable"
+                        id="sendBtn" aria-hidden="true"></button>
+
+                </div>
+            </div>
+        </section>
+    </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -152,7 +132,6 @@
                 startPrivate(userClicked);
             }
         });
-
 
         socket.on('broadcastOnlineUsersConnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
@@ -197,13 +176,14 @@
             document.getElementById('list-online-users').innerHTML = '';
             for (let user of data) {
                 let p = document.createElement('p');
+                p.setAttribute('class', 'list-online-users');
                 p.innerHTML = user.name;
                 p.value = user.id;
                 document.getElementById('list-online-users').appendChild(p);
             }
         });
 
-
+        //Function to send message in chat
         function sendMessage() {
 
             let msg = document.getElementById('message').value;
@@ -217,10 +197,20 @@
             }
         }
 
+        //Eventlistener on enter
+        let sendBtn = document.getElementById('sendBtn');
+        sendBtn.addEventListener('keyup', function (e) {
+            if (e.keyCode === 13) {
+
+                sendMessage();
+            }
+        });
+
+
         //Show when someone is typing
         // let user = document.getElementById('username').value;
         // let typing = document.getElementById('message').addEventListener('keyup', (e) => {
-            
+
         //     if (e.which === 13) {
         //         socket.emit('typingEvent', false)
         //     } else if (typing !== "") {
@@ -235,7 +225,7 @@
         //    let typing = document.getElementById('typing')
         //    typing.innerHTML = username + 'is typing';
         // });
-        
+
 
         function createRoom() {
             var newRoomName = document.getElementById('addRoom').value;
@@ -255,12 +245,22 @@
 
         function startPrivate(room) {
             /////////////////////////////////////////////////////////////////////////
-            let user = document.getElementById('username').innerHTML;
-            document.getElementById('room-name').innerHTML = user;
+            let user = document.getElementById('list-online-users').innerHTML;
+            document.getElementById('room-name').innerHTML = room;
+            console.log(user.id);
             socket.emit('room-entered', { room: room, user: user });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
         }
+
+        // for (let user of data) {
+        //         let p = document.getElementById('p-username');
+                    // console.log(p);
+        //         p.innerHTML = user.name;
+        //         p.value = user.id;
+        // document.getElementById('list-online-users').addEventListener('click', e => {
+        //     if (e.target.parentElement.id == 'list-online-users') {
+        //         let userClicked = e.target.innerHTML;
 
 
     </script>
