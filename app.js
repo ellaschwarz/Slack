@@ -27,6 +27,7 @@ const cookieParser = require('cookie-parser');
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
 const User = require('./models/users');
+const PrivateRoom = require('./models/privaterooms');
 
 const mongoose = require('mongoose');
 const mongo = require("mongodb");
@@ -100,8 +101,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 let users = [];
-/* let usersOnlineArray = []; */
 let rooms = [];
+let privateRooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
 
@@ -405,6 +406,26 @@ io.on('connection', socket => {
         socket.join(data.room);
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
+    });
+
+    socket.on('private-room', data => {
+        console.log(data);
+        console.log(socket.id);
+
+        // create private room
+        let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
+        privateRooms.push(newPrivateRoomName);
+            // io.emit('room-set', data);
+            let privateroom = new PrivateRoom({
+                name: newPrivateRoomName
+            });
+            privateroom.save().then(() => {
+                console.log('PrivateRoom saved: ' + privateroom);
+            });
+        // emit to the 2 users
+        io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
+        io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
+
     });
 });
 

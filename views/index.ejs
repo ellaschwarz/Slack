@@ -26,6 +26,13 @@
                 <button type="submit">Log Out</button>
             </form>
 
+            <div class="users">
+                <div id="online-users"></div> <br>
+                <div id="list-online-users">
+
+                </div>
+            </div>
+
         </div>
 
 
@@ -43,13 +50,11 @@
                 </div>
             </div>
 
-            <div class="users">
-                <h2>Direct Messages</h2>
-                <div id="online-users"></div> <br>
-                <div id="list-online-users">
-
-                </div>
+            <div class="direct-messages">
+                <h2>Direct Messages</h2>   
+                <div id="direct-message-list"></div> 
             </div>
+
         </div>
         <section class="chat">
             <div class="chat-container">
@@ -128,8 +133,9 @@
         // addEventListener on online users list
         document.getElementById('list-online-users').addEventListener('click', e => {
             if (e.target.parentElement.id == 'list-online-users') {
-                let userClicked = e.target.innerHTML;
-                startPrivate(userClicked);
+                let userClickedID = e.target.value;
+                let userClickedName = e.target.innerHTML;
+                startPrivate(userClickedName, userClickedID);
             }
         });
 
@@ -166,6 +172,10 @@
 
         socket.on('room-set', data => {
             document.getElementById('room-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
+        });
+
+        socket.on('private-room-set', data => {
+            document.getElementById('direct-message-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
         });
 
         socket.on('connect-to-room', data => {
@@ -235,7 +245,6 @@
         }
 
         function enterRoom(room) {
-            /////////////////////////////////////////////////////////////////////////
             let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
             socket.emit('room-entered', { room: room, user: user });
@@ -243,14 +252,22 @@
             document.getElementById('message-container').innerHTML = '';
         }
 
-        function startPrivate(room) {
-            /////////////////////////////////////////////////////////////////////////
+
+        // Enter room for private conversations ///////////////////////////////////////////////////////////////////////////////////////
+
+        function startPrivate(userClickedName, userClickedID) {
+            let userClicked = {
+                name: userClickedName,
+                id: userClickedID
+            }
+            let userFromName = document.getElementById('username').innerHTML;
+            console.log(userClicked);
             let user = document.getElementById('list-online-users').innerHTML;
-            document.getElementById('room-name').innerHTML = room;
-            console.log(user.id);
-            socket.emit('room-entered', { room: room, user: user });
+            document.getElementById('room-name').innerHTML = userClickedName;
+            socket.emit('private-room', { room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
+         
         }
 
         // for (let user of data) {
