@@ -266,19 +266,21 @@
         //     if (e.target.parentElement.id == 'list-online-users') {
         //         let userClicked = e.target.innerHTML;
 
-
+        
+        // Hide emoji-div when loading page
         $('#emoji-div').hide();
+        // Show/Hide emoji-div
         $('#big-smile').click(function(){
             $('#emoji-div').toggle();
         })
 
+        // Insert an emoji when clicking on one of them
         $('.emoji-class').click(function() {
             let emoCopy = $(this).clone()
             emoCopy = emoCopy.text()
-            console.log('text: ' + emoCopy)
-
-
-            $('#message').val(emoCopy)
+            textTemp = $('#message').val()
+            // Text content won't erase when inserting emoji
+            $('#message').val(  textTemp  + emoCopy  )
         })
 
 
