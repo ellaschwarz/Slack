@@ -99,7 +99,7 @@
                 <div class="footer-chat" class="send-message-container">
                     <div id="emoji-div">
                         <% for(let i=0; i < emojis.length; i++) { %>
-                            <span><%= emojis[i] %></span>
+                            <span class="emoji-class"><%= emojis[i] %></span>
                         <% } %>
                     </div>
                     <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
@@ -270,6 +270,15 @@
         $('#emoji-div').hide();
         $('#big-smile').click(function(){
             $('#emoji-div').toggle();
+        })
+
+        $('.emoji-class').click(function() {
+            let emoCopy = $(this).clone()
+            emoCopy = emoCopy.text()
+            console.log('text: ' + emoCopy)
+
+
+            $('#message').val(emoCopy)
         })
 
 
