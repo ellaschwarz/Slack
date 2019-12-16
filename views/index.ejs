@@ -247,7 +247,7 @@
             /////////////////////////////////////////////////////////////////////////
             let user = document.getElementById('list-online-users').innerHTML;
             document.getElementById('room-name').innerHTML = room;
-            console.log(user.id);
+            console.log(p.value);
             socket.emit('room-entered', { room: room, user: user });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
