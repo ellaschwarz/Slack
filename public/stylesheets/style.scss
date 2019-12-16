@@ -181,6 +181,9 @@ cursor: pointer;
      &:hover {
      background: var(--hover-item, #BE0002);
      }
+     &:focus {
+      background: var(--hover-item, #BE0002)
+     }
 
 }
 

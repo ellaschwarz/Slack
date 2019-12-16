@@ -201,6 +201,10 @@ p:hover {
   background: var(--hover-item, #BE0002);
 }
 
+p:focus {
+  background: var(--hover-item, #BE0002);
+}
+
 .room-container__button:before {
   content: "#";
   opacity: 0.5;

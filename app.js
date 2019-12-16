@@ -1,6 +1,12 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
+//////
+const crypto = require('crypto');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+//////
 
 const express = require('express');
 const app = express();
@@ -21,6 +27,7 @@ const cookieParser = require('cookie-parser');
 const Message = require('./models/messages');
 const Room = require('./models/rooms');
 const User = require('./models/users');
+const PrivateRoom = require('./models/privaterooms');
 
 const mongoose = require('mongoose');
 const mongo = require("mongodb");
@@ -42,6 +49,25 @@ initializePassport(
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
+
+/////////
+// Set storage engine
+const storage = multer.diskStorage({
+    destination: './public/uploads/',
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+// Initialize upload
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: 10000000},
+    fileFilter: function(req, file, cb) {
+        checkFileType(file, cb);
+    }
+}).single('myImage');
+//////////
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -75,8 +101,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 let users = [];
-/* let usersOnlineArray = []; */
 let rooms = [];
+let privateRooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
 
@@ -97,6 +123,54 @@ db.on('error', err => {
         });
     });
 });
+
+/////////////////////////////////
+app.post('/upload', (req, res) => {
+    let user = req.user;
+    upload(req, res, (err) => {
+        if (err) {
+            res.render('profil', {msg: err, username: user.username, useremail: user.email});
+        } else {
+            if (req.file == 'undefined') {
+                res.render('profil', {
+                    msg: 'Error: No File Selected!',
+                    username: user.username, 
+                    useremail: user.email
+                });
+            } else {
+                res.render('profil', {
+                    msg: 'File Uploaded!',
+                    file: `uploads/${req.file.filename}`,
+                    username: user.username, 
+                    useremail: user.email
+                });
+            }
+        }
+    });
+});
+
+function checkFileType(file, cb) {
+    // Allowed extensions
+    const filetypes = /jpeg|jpg|png|gif/;
+    // check extension
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // check Mime type
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: images Only!');
+    }
+}
+
+app.get('/profil', checkAuthenticated, (req, res) => {
+    let user = req.user;
+    res.render('profil.ejs', {username: user.username, useremail: user.email, useractualpassword: user.password});
+}); 
+
+///////////////////////////
+
 
 app.post('/message', (req, res) => {
     let DB = req.db;
@@ -296,10 +370,10 @@ io.on('connection', socket => {
     });
 
     //Private message
-    socket.on('private-msg', data => {
+    socket.on('msg', data => {
         // let socketId = users[data.receiver];
         // Send message to users in room
-        io.to(`${socketId}`).emit('newmsg', { msg: data.message, user: data.user });
+        io.to(data.room).emit('private-msg', { msg: data.message, user: data.user });
 
         let message = new Message({
             user: data.user,
@@ -333,6 +407,40 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
     });
+
+    socket.on('create-private-room', data => {
+        console.log(data);
+        console.log(socket.id);
+
+        // create private room
+        let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
+        privateRooms.push(newPrivateRoomName);
+            // io.emit('room-set', data);
+            let privateroom = new PrivateRoom({
+                name: newPrivateRoomName
+            });
+            privateroom.save().then(() => {
+                console.log('PrivateRoom saved: ' + privateroom);
+            });
+        // emit to the 2 users
+        io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
+        io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
+
+        //Join för den som skriver först
+
+    });
+
+    //Join private room för den som är receiver
+    socket.on('private-room-entered', data => {
+        console.log('socket.id ' + socket.id);
+        socket.leaveAll();
+        socket.join(data.room);
+        // Send message that someone joined the room
+        console.log('User joined private')
+        socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
+        console.log()
+    });
+
 });
 
 function checkAuthenticated(req, res, next) {
