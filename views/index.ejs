@@ -189,8 +189,8 @@
 
         //Function to send message in chat
         function sendMessage() {
-
-            let msg = document.getElementById('message').value;
+            let msgElement = document.getElementById('message');
+            let msg = msgElement.value;
             let room = document.getElementById('room-name').innerHTML;
             let user = document.getElementById('username').innerHTML;
 
@@ -198,16 +198,15 @@
                 socket.emit('msg', { message: msg, user: user, room: room });
                 // Need to append the message here for the sender (`You: ${msg}`);
                 document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
+                // Clear the text-input for new message
+                msgElement.value = '';
             }
         }
 
-        //Eventlistener on enter
+        // Eventlistener on enter
         let msgOnEnter = document.getElementById('message');
-        console.log(msgOnEnter)
         msgOnEnter.addEventListener('keydown', function (e) {
-            console.log('Antes del enter')
             if (e.keyCode === 13) {
-                console.log('Enter oprimido')
                 sendMessage();
             }
         });

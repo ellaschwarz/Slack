@@ -46,7 +46,6 @@ initializePassport(
 let emojiList = ['heart_eyes', 
                 'grin', 
                 'joy', 
-                'heart_eyes',
                 'pensive',
                 'cry',
                 'rage',
