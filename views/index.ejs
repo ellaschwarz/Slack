@@ -190,16 +190,11 @@
             let room = document.getElementById('room-name').innerHTML;
             let user = document.getElementById('username').innerHTML;
 
-            // Retrieve Emojify so 'You-user' gets the emoji too
-            socket.emit('emojifying', {message: msg})
-            socket.on('emojifying', data => {
-                msg = data.message;
-                if (msg) {
-                    socket.emit('msg', { message: msg, user: user, room: room });
-                    // Need to append the message here for the sender (`You: ${msg}`);
-                    document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
-                }
-            })
+            if (msg) {
+                socket.emit('msg', { message: msg, user: user, room: room });
+                // Need to append the message here for the sender (`You: ${msg}`);
+                document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
+            }
         }
 
         //Eventlistener on enter
