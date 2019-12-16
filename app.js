@@ -42,6 +42,26 @@ initializePassport(
     id => users.find(user => user.id === id)
 );
 
+/////////////////////////// EMOJI DEL ////////////////////////////
+let emojiList = ['heart_eyes', 
+                'grin', 
+                'joy', 
+                'heart_eyes',
+                'pensive',
+                'cry',
+                'rage',
+                'expressionless']
+let emojiToShow = []
+
+loadEmojiArray(emojiList)
+
+function loadEmojiArray (arrayText) {
+   for (const iterator of arrayText) {
+      emojiToShow.push(emoji.get(iterator))   
+   }
+}
+///////////////////////////////////////////////////////////////////
+
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
 
@@ -152,7 +172,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, });
+    res.render('index', { name: req.user.username, rooms: rooms, emojis: emojiToShow});
 
 });
 
