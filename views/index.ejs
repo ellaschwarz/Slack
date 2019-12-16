@@ -97,13 +97,12 @@
                 </div>
                 <span id="typing"></span>
                 <div class="footer-chat" class="send-message-container">
-                    <div>
+                    <div id="emoji-div">
                         <% for(let i=0; i < emojis.length; i++) { %>
                             <span><%= emojis[i] %></span>
                         <% } %>
-                    
                     </div>
-                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"></i>
+                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
                     <input id="message" class="write-message" placeholder="Type your message here" type="text">
                     <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
                     <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable"
@@ -266,6 +265,12 @@
         // document.getElementById('list-online-users').addEventListener('click', e => {
         //     if (e.target.parentElement.id == 'list-online-users') {
         //         let userClicked = e.target.innerHTML;
+
+
+        $('#emoji-div').hide();
+        $('#big-smile').click(function(){
+            $('#emoji-div').toggle();
+        })
 
 
     </script>
