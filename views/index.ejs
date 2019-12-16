@@ -202,10 +202,12 @@
         }
 
         //Eventlistener on enter
-        let sendBtn = document.getElementById('sendBtn');
-        sendBtn.addEventListener('keyup', function (e) {
+        let msgOnEnter = document.getElementById('message');
+        console.log(msgOnEnter)
+        msgOnEnter.addEventListener('keydown', function (e) {
+            console.log('Antes del enter')
             if (e.keyCode === 13) {
-
+                console.log('Enter oprimido')
                 sendMessage();
             }
         });
