@@ -27,6 +27,8 @@ const mongo = require("mongodb");
 const monk = require("monk");
 const messageDB = monk('localhost:27017/Slack');
 
+const emoji = require('node-emoji');
+
 const initializePassport = require('./passport-config');
 
 initializePassport(
@@ -282,14 +284,15 @@ io.on('connection', socket => {
     });
 
     socket.on('msg', data => {
+        emojified = emoji.emojify(data.message)
 
         // Send message to users in room
-        socket.to(data.room).emit('newmsg', { msg: data.message, user: data.user });
+        socket.to(data.room).emit('newmsg', { msg: emojified, user: data.user });
 
         let message = new Message({
             user: data.user,
             room: data.room,
-            message_body: data.message
+            message_body: emojified
         });
 
         message.save().then(() => console.log('Message saved'));
