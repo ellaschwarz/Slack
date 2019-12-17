@@ -34,6 +34,8 @@ const mongo = require("mongodb");
 const monk = require("monk");
 const messageDB = monk('localhost:27017/Slack');
 
+const emoji = require('node-emoji');
+
 const initializePassport = require('./passport-config');
 
 initializePassport(
@@ -46,6 +48,47 @@ initializePassport(
 
     id => users.find(user => user.id === id)
 );
+
+/////////////////////////// EMOJI DEL ////////////////////////////
+let emojiList = ['heart_eyes', 
+                'grin', 
+                'joy', 
+                'pensive',
+                'cry',
+                'rage',
+                'expressionless',
+                'zipper_mouth_face',
+                'money_mouth_face',
+                'face_with_thermometer',
+                'nerd_face',
+                'thinking_face',
+                'cold_sweat',
+                'scream',
+                'astonished',
+                'flushed',
+                'sleeping',
+                'dizzy_face',
+                'no_mouth',
+                'face_with_rolling_eyes',
+                'rolling_on_the_floor_laughing',
+                'woman-shrugging',
+                'man-shrugging',
+                'woman-facepalming',
+                'man-facepalming',
+                'see_no_evil',
+                'hear_no_evil',
+                'speak_no_evil',
+                'heartpulse']
+let emojiToShow = []
+
+loadEmojiArray(emojiList)
+
+function loadEmojiArray (arrayText) {
+   for (const iterator of arrayText) {
+      emojiToShow.push(emoji.get(iterator))   
+   }
+}
+///////////////////////////////////////////////////////////////////
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
@@ -233,7 +276,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id });
+    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id, emojis: emojiToShow });
 
 });
 
@@ -365,14 +408,15 @@ io.on('connection', socket => {
     });
 
     socket.on('msg', data => {
+        emojified = emoji.emojify(data.message)
 
         // Send message to users in room
-        socket.to(data.room).emit('newmsg', { msg: data.message, user: data.user });
+        socket.to(data.room).emit('newmsg', { msg: emojified, user: data.user });
 
         let message = new Message({
             user: data.user,
             room: data.room,
-            message_body: data.message
+            message_body: emojified
         });
 
         message.save().then(() => console.log('Message saved'));
