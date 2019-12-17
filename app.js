@@ -50,24 +50,7 @@ initializePassport(
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
 
-/////////
-// Set storage engine
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
 
-// Initialize upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 10000000},
-    fileFilter: function(req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).single('myImage');
-//////////
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -127,22 +110,48 @@ db.on('error', err => {
 /////////////////////////////////
 app.post('/upload', (req, res) => {
     let user = req.user;
+    
+    // Set storage engine
+
+    const storage = multer.diskStorage({
+        destination: './public/uploads/',
+        /// FIND A WAY TO NAME THE FILE username + user.id.
+        filename: function (req, file, cb) {
+            cb(null, user.username + '-' + user.id + path.extname(file.originalname));
+        }
+    });
+
+
+    // Initialize upload
+    const upload = multer({
+        storage: storage,
+        limits: { fileSize: 10000000 },
+        fileFilter: function (req, file, cb) {
+            checkFileType(file, cb);
+        }
+        // User name here instead of myImage
+    }).single('myImage');
+    //////////
+
+
     upload(req, res, (err) => {
         if (err) {
-            res.render('profil', {msg: err, username: user.username, useremail: user.email});
+            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id });
         } else {
             if (req.file == 'undefined') {
                 res.render('profil', {
                     msg: 'Error: No File Selected!',
-                    username: user.username, 
-                    useremail: user.email
+                    username: user.username,
+                    useremail: user.email,
+                    userid: user.id
                 });
             } else {
                 res.render('profil', {
                     msg: 'File Uploaded!',
                     file: `uploads/${req.file.filename}`,
-                    username: user.username, 
-                    useremail: user.email
+                    username: user.username,
+                    useremail: user.email,
+                    userid: user.id
                 });
             }
         }
@@ -166,8 +175,8 @@ function checkFileType(file, cb) {
 
 app.get('/profil', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profil.ejs', {username: user.username, useremail: user.email, useractualpassword: user.password});
-}); 
+    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id });
+});
 
 ///////////////////////////
 
@@ -415,13 +424,13 @@ io.on('connection', socket => {
         // create private room
         let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
         privateRooms.push(newPrivateRoomName);
-            // io.emit('room-set', data);
-            let privateroom = new PrivateRoom({
-                name: newPrivateRoomName
-            });
-            privateroom.save().then(() => {
-                console.log('PrivateRoom saved: ' + privateroom);
-            });
+        // io.emit('room-set', data);
+        let privateroom = new PrivateRoom({
+            name: newPrivateRoomName
+        });
+        privateroom.save().then(() => {
+            console.log('PrivateRoom saved: ' + privateroom);
+        });
         // emit to the 2 users
         io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
         io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
@@ -464,5 +473,3 @@ function findClientsSocket(roomID, namespace) {
 http.listen(3000, () => {
     console.log('listening on *:3000');
 });
-
-
