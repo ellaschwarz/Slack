@@ -444,6 +444,15 @@ io.on('connection', socket => {
         });
     });
 
+    ///////////////////////////////////////////////////////////////////////////////
+    // Typing
+    socket.on('typingEvent', data => {
+        console.log('Someone is writing' + data.room + data.user)
+        socket.to(data.room).emit('typingEvent', { user: data.user });
+        //let typing = document.getElementById('typing')
+        //typing.innerHTML = username + 'is typing';
+    });
+
 });
 
 function checkAuthenticated(req, res, next) {

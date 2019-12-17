@@ -215,23 +215,37 @@
         ///////////////////////////////////////
         //  Show when someone is typing
 
-        let user = document.getElementById('username').value;
-        let typing = document.getElementById('message').addEventListener('keyup', (e) => {
+        let textArea = document.getElementById('message')
+        let typing = document.getElementById('typing')
+
+        textArea.addEventListener('keyup', (e) => {
+
+            let user = document.getElementById('username').innerHTML;
+            let room = document.getElementById('room-name').innerHTML;
+
+            console.log ('Entra a Typing function')
 
             if (e.which === 13) {
-                socket.emit('typingEvent', false)
-            } else if (typing !== "") {
-                socket.emit('typingEvent', true)
+                socket.emit('typingEvent', {user: user, room: room});
+                //socket.emit('typingEvent', false)
+            } else if (textArea !== "") {
+                socket.emit('typingEvent', {user: user, room: room});
+                //socket.emit('typingEvent', true)
                 console.log('ok');
             } else {
-                socket.emit('typingEvent', false)
+                socket.emit('typingEvent', {user: user, room: room});
+                //socket.emit('typingEvent', false)
             }
         });
 
-        socket.on('typingEvent', (username) => {
-            let typing = document.getElementById('typing')
-            typing.innerHTML = username + 'is typing';
+        socket.on('typingEvent', data => {
+            console.log('Typing comming from server')
+            typing.innerHTML = data.user + ' is typing...';
         });
+
+        // typing.innerHTML = 'Testing Typing element';    BORRAR
+
+
         
         ////////////////////////
 
