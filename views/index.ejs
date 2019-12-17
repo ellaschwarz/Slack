@@ -53,7 +53,11 @@
 
             <div class="direct-messages">
                 <h2>Direct Messages</h2>   
-                <div id="direct-message-list"></div> 
+                <div id="direct-message-list">
+                    <% privaterooms.forEach(element => { %>
+                    <p><%=element%></p>
+                    <% }); %>
+                </div> 
             </div>
 
         </div>

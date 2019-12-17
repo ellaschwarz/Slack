@@ -131,6 +131,7 @@ let privateRooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
 let messagesInThisRoom = [];
+let yourPrivateRooms = [];
 
 db.on('error', err => {
     console.log('Connection error' + err);
@@ -143,6 +144,7 @@ db.on('error', err => {
             rooms.push(room.name);
         });
     });
+
 });
 
 /////////////////////////////////
@@ -250,8 +252,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id, emojis: emojiToShow });
-
+    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id, emojis: emojiToShow, privaterooms: yourPrivateRooms });
 });
 
 app.get('/login', /*checkNotAuthenticated,*/(req, res) => {
@@ -330,6 +331,8 @@ io.on('connection', socket => {
             id: data.id
         }
         socket.name = user.name;
+
+        privateRoomsCheck(user.name);
 
         // Check for online sockets
         setInterval(function () {
@@ -410,7 +413,8 @@ io.on('connection', socket => {
         privateRooms.push(newPrivateRoomName);
         // io.emit('room-set', data);
         let privateroom = new PrivateRoom({
-            name: newPrivateRoomName
+            name: newPrivateRoomName,
+            users: [data.usernameTo, data.usernameFrom]
         });
         privateroom.save().then(() => {
             console.log('PrivateRoom saved: ' + privateroom);
@@ -476,6 +480,17 @@ function findClientsSocket(roomID, namespace) {
 
 function emptyArrayMessages() {
     messagesInThisRoom = [];
+}
+
+function privateRoomsCheck(user) {
+    // Private rooms check
+    yourPrivateRooms = [];
+    PrivateRoom.find({users: user}).then(result => {
+        result.forEach(privateRoom => {
+            yourPrivateRooms.push(privateRoom.name);
+        });
+        console.log(yourPrivateRooms);
+    });
 }
 
 http.listen(3000, () => {
