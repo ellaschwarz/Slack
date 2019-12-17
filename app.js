@@ -203,7 +203,7 @@ app.post('/upload', (req, res) => {
 
 function checkFileType(file, cb) {
     // Allowed extensions
-    const filetypes = /jpeg|jpg|png|gif/;
+    const filetypes = /jpg/;
     // check extension
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     // check Mime type
@@ -212,7 +212,7 @@ function checkFileType(file, cb) {
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb('Error: images Only!');
+        cb('Error: images Only with jpg extension!');
     }
 }
 
