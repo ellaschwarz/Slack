@@ -144,6 +144,8 @@
             }
         });
 
+        // 
+
         socket.on('broadcastOnlineUsersConnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
             let name = document.getElementById('username').innerHTML;
@@ -269,6 +271,7 @@
             let userFromName = document.getElementById('username').innerHTML;
             console.log(userClicked);
             let user = document.getElementById('list-online-users').innerHTML;
+            // Change so that both users get new room name /////////////////////////////////
             document.getElementById('room-name').innerHTML = userClickedName;
             socket.emit('private-room', { room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName });
             // Clear messages
