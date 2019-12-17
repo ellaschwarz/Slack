@@ -422,20 +422,20 @@ io.on('connection', socket => {
         message.save().then(() => console.log('Message saved'));
     });
 
-    //Privte message
-    socket.on('private-msg', data => {
-        // let socketId = users[data.receiver];
-        // Send message to users in room
-        io.to(`${socketId}`).emit('newmsg', { msg: data.message, user: data.user });
+    //Private message
+    // socket.on('msg', data => {
+    //     // let socketId = users[data.receiver];
+    //     // Send message to users in room
+    //     io.to(data.room).emit('private-msg', { msg: data.message, user: data.usernameFrom });
 
-        let message = new Message({
-            user: data.user,
-            room: data.room,
-            message_body: data.message
-        });
+    //     let message = new Message({
+    //         user: data.usernameFrom,
+    //         room: data.room,
+    //         message_body: data.message
+    //     });
 
-        message.save().then(() => console.log('Message saved'));
-    });
+    //     message.save().then(() => console.log('Message saved'));
+    // });
 
     socket.on('new-room', data => {
 
@@ -461,7 +461,7 @@ io.on('connection', socket => {
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
     });
 
-    socket.on('private-room', data => {
+    socket.on('create-private-room', data => {
         console.log(data);
         console.log(socket.id);
 
@@ -479,7 +479,22 @@ io.on('connection', socket => {
         io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
         io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
 
+        //Join för den som skriver först
+
     });
+
+    //Join private room för den som är receiver
+    socket.on('private-room-entered', data => {
+        console.log('socket.id ' + socket.id);
+        socket.leaveAll();
+        socket.join(data.room);
+        console.log(data);
+        // Send message that someone joined the room
+        console.log('User joined private')
+        socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
+        console.log()
+    });
+
 });
 
 function checkAuthenticated(req, res, next) {
