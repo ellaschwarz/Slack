@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=2.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
@@ -14,22 +14,20 @@
 <body>
     
     <h1>Your profil</h1>
+    <img height="200px" width="200px" src="uploads/<%=username%>-<%=userid%>.jpg" alt="image here">
     <form action="/profil" method="POST">
     <div>
          <label for="name">Name:</label>
         <input type="text" id="name" value="<%= username %>" name="name" required>
         <label for="email">Email:</label>
         <input type="text" id="email" value="<%= useremail %>" name="email" required>
-        
-        <!-- HOW TO LOAD UP A PICTURE ?! -->
-        
     
         <button type="submit">Update</button>
     </div>
     </form>
     
     <div class="container">
-        <h1>File upload</h1>
+        <h2>Change profile image</h2>
         <%= typeof msg != 'undefined' ? msg : '' %>
         <form action="/upload" method="POST" enctype="multipart/form-data">
             <div class="file-field input-field">
@@ -44,9 +42,7 @@
             <button type="submit" class="btn">Submit</button>
         </form>
         <br>
-        <img height="200px" width="200px" src="<%= typeof file != 'undefined' ? file : '' %>" class="responsive-img" alt="">
     </div>
 
 </body>
 </html>
-

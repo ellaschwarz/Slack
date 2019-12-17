@@ -16,8 +16,9 @@
 <body>
     <div class="slack">
         <div class="profilebar">
+            
             <div class="photo"
-                style="background-image: url(https://cdn2.iconfinder.com/data/icons/facebook-51/32/FACEBOOK_LINE-01-512.png);">
+                style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);">
                 <div class="online"></div>
             </div>
             <h1 id="username"><%= name %></h1>
@@ -102,8 +103,12 @@
                 </div>
                 <span id="typing"></span>
                 <div class="footer-chat" class="send-message-container">
-
-                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"></i>
+                    <div id="emoji-div">
+                        <% for(let i=0; i < emojis.length; i++) { %>
+                            <span class="emoji-class"><%= emojis[i] %></span>
+                        <% } %>
+                    </div>
+                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
                     <input id="message" class="write-message" placeholder="Type your message here" type="text">
                     <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
                     <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable"
@@ -204,8 +209,8 @@
 
         //Function to send message in chat
         function sendMessage() {
-
-            let msg = document.getElementById('message').value;
+            let msgElement = document.getElementById('message');
+            let msg = msgElement.value;
             let room = document.getElementById('room-name').innerHTML;
             let user = document.getElementById('username').innerHTML;
 
@@ -213,17 +218,24 @@
                 socket.emit('msg', { message: msg, user: user, room: room });
                 // Need to append the message here for the sender (`You: ${msg}`);
                 document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
+                // Clear the text-input for new message
+                msgElement.value = '';
             }
              
         }
 
+<<<<<<< HEAD
 
 
         //Eventlistener on enter
         let sendBtn = document.getElementById('sendBtn');
         sendBtn.addEventListener('keyup', function (e) {
+=======
+        // Eventlistener on enter
+        let msgOnEnter = document.getElementById('message');
+        msgOnEnter.addEventListener('keydown', function (e) {
+>>>>>>> 1ddbc046e51e5974bdb23f36174efdca50408cd8
             if (e.keyCode === 13) {
-
                 sendMessage();
             }
         });
@@ -281,12 +293,41 @@
         }
         // Enter room for private conversations ///////////////////////////////////////////////////////////////////////////////////////
 
+<<<<<<< HEAD
         function enterPrivateRoom(userClickedName, userClickedID) {
             let privatechat = document.getElementById('direct-message-list');
             let userFromName = document.getElementById('username').innerHTML;
             socket.emit('private-room-entered', {room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName})
             document.getElementById('message-container').innerHTML = '';
         }
+=======
+        // for (let user of data) {
+        //         let p = document.getElementById('p-username');
+                    // console.log(p);
+        //         p.innerHTML = user.name;
+        //         p.value = user.id;
+        // document.getElementById('list-online-users').addEventListener('click', e => {
+        //     if (e.target.parentElement.id == 'list-online-users') {
+        //         let userClicked = e.target.innerHTML;
+
+        
+        // Hide emoji-div when loading page
+        $('#emoji-div').hide();
+        // Show/Hide emoji-div
+        $('#big-smile').click(function(){
+            $('#emoji-div').toggle('fast');
+        })
+
+        // Insert an emoji when clicking on one of them
+        $('.emoji-class').click(function() {
+            let emoCopy = $(this).clone()
+            emoCopy = emoCopy.text()
+            textTemp = $('#message').val()
+            // Text content won't erase when inserting emoji
+            $('#message').val(  textTemp  + emoCopy  )
+        })
+
+>>>>>>> 1ddbc046e51e5974bdb23f36174efdca50408cd8
 
     </script>
 </body>

@@ -34,6 +34,8 @@ const mongo = require("mongodb");
 const monk = require("monk");
 const messageDB = monk('localhost:27017/Slack');
 
+const emoji = require('node-emoji');
+
 const initializePassport = require('./passport-config');
 
 initializePassport(
@@ -47,27 +49,51 @@ initializePassport(
     id => users.find(user => user.id === id)
 );
 
+/////////////////////////// EMOJI DEL ////////////////////////////
+let emojiList = ['heart_eyes', 
+                'grin', 
+                'joy', 
+                'pensive',
+                'cry',
+                'rage',
+                'expressionless',
+                'zipper_mouth_face',
+                'money_mouth_face',
+                'face_with_thermometer',
+                'nerd_face',
+                'thinking_face',
+                'cold_sweat',
+                'scream',
+                'astonished',
+                'flushed',
+                'sleeping',
+                'dizzy_face',
+                'no_mouth',
+                'face_with_rolling_eyes',
+                'rolling_on_the_floor_laughing',
+                'woman-shrugging',
+                'man-shrugging',
+                'woman-facepalming',
+                'man-facepalming',
+                'see_no_evil',
+                'hear_no_evil',
+                'speak_no_evil',
+                'heartpulse']
+let emojiToShow = []
+
+loadEmojiArray(emojiList)
+
+function loadEmojiArray (arrayText) {
+   for (const iterator of arrayText) {
+      emojiToShow.push(emoji.get(iterator))   
+   }
+}
+///////////////////////////////////////////////////////////////////
+
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
 
-/////////
-// Set storage engine
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
 
-// Initialize upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 10000000},
-    fileFilter: function(req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).single('myImage');
-//////////
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -127,22 +153,48 @@ db.on('error', err => {
 /////////////////////////////////
 app.post('/upload', (req, res) => {
     let user = req.user;
+    
+    // Set storage engine
+
+    const storage = multer.diskStorage({
+        destination: './public/uploads/',
+        /// FIND A WAY TO NAME THE FILE username + user.id.
+        filename: function (req, file, cb) {
+            cb(null, user.username + '-' + user.id + path.extname(file.originalname));
+        }
+    });
+
+
+    // Initialize upload
+    const upload = multer({
+        storage: storage,
+        limits: { fileSize: 10000000 },
+        fileFilter: function (req, file, cb) {
+            checkFileType(file, cb);
+        }
+        // User name here instead of myImage
+    }).single('myImage');
+    //////////
+
+
     upload(req, res, (err) => {
         if (err) {
-            res.render('profil', {msg: err, username: user.username, useremail: user.email});
+            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id});
         } else {
             if (req.file == 'undefined') {
                 res.render('profil', {
                     msg: 'Error: No File Selected!',
-                    username: user.username, 
-                    useremail: user.email
+                    username: user.username,
+                    useremail: user.email,
+                    userid: user.id
                 });
             } else {
                 res.render('profil', {
                     msg: 'File Uploaded!',
                     file: `uploads/${req.file.filename}`,
-                    username: user.username, 
-                    useremail: user.email
+                    username: user.username,
+                    useremail: user.email,
+                    userid: user.id
                 });
             }
         }
@@ -166,8 +218,8 @@ function checkFileType(file, cb) {
 
 app.get('/profil', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profil.ejs', {username: user.username, useremail: user.email, useractualpassword: user.password});
-}); 
+    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id});
+});
 
 ///////////////////////////
 
@@ -224,7 +276,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, });
+    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id, emojis: emojiToShow });
 
 });
 
@@ -267,7 +319,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/index', checkAuthenticated, (req, res) => {
-    res.render('index')
+    res.render('index');
 });
 
 app.delete('/logout', (req, res) => {
@@ -356,14 +408,15 @@ io.on('connection', socket => {
     });
 
     socket.on('msg', data => {
+        emojified = emoji.emojify(data.message)
 
         // Send message to users in room
-        socket.to(data.room).emit('newmsg', { msg: data.message, user: data.user });
+        socket.to(data.room).emit('newmsg', { msg: emojified, user: data.user });
 
         let message = new Message({
             user: data.user,
             room: data.room,
-            message_body: data.message
+            message_body: emojified
         });
 
         message.save().then(() => console.log('Message saved'));
@@ -415,13 +468,13 @@ io.on('connection', socket => {
         // create private room
         let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
         privateRooms.push(newPrivateRoomName);
-            // io.emit('room-set', data);
-            let privateroom = new PrivateRoom({
-                name: newPrivateRoomName
-            });
-            privateroom.save().then(() => {
-                console.log('PrivateRoom saved: ' + privateroom);
-            });
+        // io.emit('room-set', data);
+        let privateroom = new PrivateRoom({
+            name: newPrivateRoomName
+        });
+        privateroom.save().then(() => {
+            console.log('PrivateRoom saved: ' + privateroom);
+        });
         // emit to the 2 users
         io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
         io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
@@ -479,5 +532,3 @@ function findClientsSocket(roomID, namespace) {
 http.listen(3000, () => {
     console.log('listening on *:3000');
 });
-
-
