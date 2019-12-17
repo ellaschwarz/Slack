@@ -105,8 +105,9 @@
                     </div>
                     <p class="time"> 15h09</p>
                 </div>
-                <span id="typing"></span>
+                
                 <div class="footer-chat" class="send-message-container">
+                    <span id="typing"></span>
                     <div id="emoji-div">
                         <% for(let i=0; i < emojis.length; i++) { %>
                             <span class="emoji-class"><%= emojis[i] %></span>
@@ -212,7 +213,7 @@
             });
         })
 
-        ///////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
         //  Show when someone is typing
 
         let textArea = document.getElementById('message')
@@ -223,31 +224,26 @@
             let user = document.getElementById('username').innerHTML;
             let room = document.getElementById('room-name').innerHTML;
 
-            console.log ('Entra a Typing function')
-
             if (e.which === 13) {
-                socket.emit('typingEvent', {user: user, room: room});
-                //socket.emit('typingEvent', false)
-            } else if (textArea !== "") {
-                socket.emit('typingEvent', {user: user, room: room});
-                //socket.emit('typingEvent', true)
-                console.log('ok');
+                // Send FALSE when presing ENTER
+                socket.emit('typingEvent', {user: user, room: room, status: false});
+            } else if (textArea.value == "") {
+                // Send FALSE when text has been deleted on textArea
+                socket.emit('typingEvent', {user: user, room: room, status: false});
             } else {
-                socket.emit('typingEvent', {user: user, room: room});
-                //socket.emit('typingEvent', false)
+                // Send TRUE when user is typing
+                socket.emit('typingEvent', {user: user, room: room, status: true});
             }
         });
 
+        // Status TRUE: Show user typing / Status FALSE: Show nothing
         socket.on('typingEvent', data => {
-            console.log('Typing comming from server')
-            typing.innerHTML = data.user + ' is typing...';
-        });
-
-        // typing.innerHTML = 'Testing Typing element';    BORRAR
-
-
-        
-        ////////////////////////
+            if (data.status)
+                typing.innerHTML = data.user + ' is typing...';
+            else
+                typing.innerHTML = '';
+        });        
+        ////////////////////////////////////////////////////////////////////////////
 
         //Function to send message in chat
         function sendMessage() {

@@ -444,13 +444,11 @@ io.on('connection', socket => {
         });
     });
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // Typing
+    // Show when someone is typing
     socket.on('typingEvent', data => {
-        console.log('Someone is writing' + data.room + data.user)
-        socket.to(data.room).emit('typingEvent', { user: data.user });
-        //let typing = document.getElementById('typing')
-        //typing.innerHTML = username + 'is typing';
+        console.log(data)
+        console.log('Someone is writing' + data.room + ' ' + data.user + ' ' + data.status)
+        socket.to(data.room).emit('typingEvent', { user: data.user, status: data.status });
     });
 
 });
