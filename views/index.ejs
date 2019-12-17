@@ -211,6 +211,30 @@
                 /* console.log(message.user + ': ' + message.message_body); */
             });
         })
+
+        ///////////////////////////////////////
+        //  Show when someone is typing
+
+        let user = document.getElementById('username').value;
+        let typing = document.getElementById('message').addEventListener('keyup', (e) => {
+
+            if (e.which === 13) {
+                socket.emit('typingEvent', false)
+            } else if (typing !== "") {
+                socket.emit('typingEvent', true)
+                console.log('ok');
+            } else {
+                socket.emit('typingEvent', false)
+            }
+        });
+
+        socket.on('typingEvent', (username) => {
+            let typing = document.getElementById('typing')
+            typing.innerHTML = username + 'is typing';
+        });
+        
+        ////////////////////////
+
         //Function to send message in chat
         function sendMessage() {
             let msgElement = document.getElementById('message');
