@@ -166,9 +166,10 @@
 
         socket.on('private-msg', data => {
             console.log('incoming');
-            if (users) {
-                document.getElementById('message-container').innerHTML += '<div>' + data.user + ': ' + data.msg + '</div>';
-            }
+            console.log(users);
+            // if (users) {
+                document.getElementById('message-container').innerHTML += '<div>' + data.usernameFrom + ': ' + data.msg + '</div>';
+            // }
         });
 
         socket.on('room-exists', data => {
@@ -213,7 +214,10 @@
                 // Need to append the message here for the sender (`You: ${msg}`);
                 document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
             }
+             
         }
+
+
 
         //Eventlistener on enter
         let sendBtn = document.getElementById('sendBtn');

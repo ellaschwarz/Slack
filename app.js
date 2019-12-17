@@ -370,19 +370,19 @@ io.on('connection', socket => {
     });
 
     //Private message
-    socket.on('msg', data => {
-        // let socketId = users[data.receiver];
-        // Send message to users in room
-        io.to(data.room).emit('private-msg', { msg: data.message, user: data.user });
+    // socket.on('msg', data => {
+    //     // let socketId = users[data.receiver];
+    //     // Send message to users in room
+    //     io.to(data.room).emit('private-msg', { msg: data.message, user: data.usernameFrom });
 
-        let message = new Message({
-            user: data.user,
-            room: data.room,
-            message_body: data.message
-        });
+    //     let message = new Message({
+    //         user: data.usernameFrom,
+    //         room: data.room,
+    //         message_body: data.message
+    //     });
 
-        message.save().then(() => console.log('Message saved'));
-    });
+    //     message.save().then(() => console.log('Message saved'));
+    // });
 
     socket.on('new-room', data => {
 
@@ -435,6 +435,7 @@ io.on('connection', socket => {
         console.log('socket.id ' + socket.id);
         socket.leaveAll();
         socket.join(data.room);
+        console.log(data);
         // Send message that someone joined the room
         console.log('User joined private')
         socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
