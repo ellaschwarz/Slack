@@ -136,7 +136,7 @@ app.post('/upload', (req, res) => {
 
     upload(req, res, (err) => {
         if (err) {
-            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id });
+            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id});
         } else {
             if (req.file == 'undefined') {
                 res.render('profil', {
@@ -175,7 +175,7 @@ function checkFileType(file, cb) {
 
 app.get('/profil', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id });
+    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id});
 });
 
 ///////////////////////////
@@ -233,7 +233,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, });
+    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id });
 
 });
 
@@ -276,7 +276,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/index', checkAuthenticated, (req, res) => {
-    res.render('index')
+    res.render('index');
 });
 
 app.delete('/logout', (req, res) => {
