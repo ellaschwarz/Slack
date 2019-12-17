@@ -387,6 +387,7 @@ io.on('connection', socket => {
     });
 
     socket.on('room-entered', data => {
+        let messagesInThisRoom;
         socket.leaveAll();
         socket.join(data.room);
         // Send message that someone joined the room
