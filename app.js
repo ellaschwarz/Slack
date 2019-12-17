@@ -130,6 +130,7 @@ let rooms = [];
 let privateRooms = [];
 let usersOnline = 0;
 let usersOnlineArray2 = [];
+let messagesInThisRoom = [];
 
 db.on('error', err => {
     console.log('Connection error' + err);
@@ -387,11 +388,19 @@ io.on('connection', socket => {
     });
 
     socket.on('room-entered', data => {
-        let messagesInThisRoom;
+        emptyArrayMessages();
         socket.leaveAll();
         socket.join(data.room);
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
+        // GET ALL MESSAGES SAVED IN DATABASE
+        Message.find({room: `${data.room}`}).then(result => {
+            result.forEach(message => {
+                messagesInThisRoom.push(message);
+            });
+            console.log(messagesInThisRoom);
+            socket.emit('print-messages', {messages: messagesInThisRoom});
+        });
     });
 
     socket.on('create-private-room', data => {
@@ -416,10 +425,19 @@ io.on('connection', socket => {
 
     //Join private room för den som är receiver
     socket.on('private-room-entered', data => {
+        emptyArrayMessages();
         socket.leaveAll();
         socket.join(data.room);
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
+
+        Message.find({room: `${data.room}`}).then(result => {
+            result.forEach(message => {
+                messagesInThisRoom.push(message);
+            });
+            console.log(messagesInThisRoom);
+            socket.emit('print-messages', {messages: messagesInThisRoom});
+        });
     });
 
 });
@@ -454,6 +472,10 @@ function findClientsSocket(roomID, namespace) {
         }
     }
     return res;
+}
+
+function emptyArrayMessages() {
+    messagesInThisRoom = [];
 }
 
 http.listen(3000, () => {

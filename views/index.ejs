@@ -199,6 +199,14 @@
             }
         });
 
+        socket.on('print-messages', data => {
+            console.log(data.messages);
+            data.messages.forEach(message => {
+                let p = message.user + ': ' + message.message_body;
+                printMessage(p);
+                /* console.log(message.user + ': ' + message.message_body); */
+            });
+        })
         //Function to send message in chat
         function sendMessage() {
             let msgElement = document.getElementById('message');
@@ -261,6 +269,11 @@
             let userFromName = document.getElementById('username').innerHTML;
             socket.emit('private-room-entered', {room: dmClicked, usernameFrom: userFromName});
             document.getElementById('message-container').innerHTML = '';
+        }
+
+        function printMessage(message) {
+                document.getElementById('message-container').innerHTML += '<div>' + message + '</div>';
+            
         }
 
         // Hide emoji-div when loading page
