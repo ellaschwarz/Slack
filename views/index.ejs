@@ -169,14 +169,6 @@
             }
         });
 
-        socket.on('private-msg', data => {
-            console.log('incoming');
-            console.log(users);
-            // if (users) {
-                document.getElementById('message-container').innerHTML += '<div>' + data.usernameFrom + ': ' + data.msg + '</div>';
-            // }
-        });
-
         socket.on('room-exists', data => {
             document.getElementById('error-container-room').innerHTML = data;
             setTimeout(() => {
@@ -232,27 +224,6 @@
             }
         });
 
-
-        //Show when someone is typing
-        // let user = document.getElementById('username').value;
-        // let typing = document.getElementById('message').addEventListener('keyup', (e) => {
-
-        //     if (e.which === 13) {
-        //         socket.emit('typingEvent', false)
-        //     } else if (typing !== "") {
-        //         socket.emit('typingEvent', true)
-        //         console.log('ok');
-        //     } else {
-        //         socket.emit('typingEvent', false)
-        //     }
-        // });
-
-        // socket.on('typingEvent', (username) => {
-        //    let typing = document.getElementById('typing')
-        //    typing.innerHTML = username + 'is typing';
-        // });
-
-
         function createRoom() {
             var newRoomName = document.getElementById('addRoom').value;
             if (newRoomName) {
@@ -284,24 +255,14 @@
             document.getElementById('message-container').innerHTML = '';
          
         }
-        // Enter room for private conversations ///////////////////////////////////////////////////////////////////////////////////////
 
-        function enterPrivateRoom(userClickedName, userClickedID) {
-            let privatechat = document.getElementById('direct-message-list');
+        function enterPrivateRoom(dmClicked) {
+            document.getElementById('room-name').innerHTML = dmClicked;
             let userFromName = document.getElementById('username').innerHTML;
-            socket.emit('private-room-entered', {room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName})
+            socket.emit('private-room-entered', {room: dmClicked, usernameFrom: userFromName});
             document.getElementById('message-container').innerHTML = '';
         }
-        // for (let user of data) {
-        //         let p = document.getElementById('p-username');
-                    // console.log(p);
-        //         p.innerHTML = user.name;
-        //         p.value = user.id;
-        // document.getElementById('list-online-users').addEventListener('click', e => {
-        //     if (e.target.parentElement.id == 'list-online-users') {
-        //         let userClicked = e.target.innerHTML;
 
-        
         // Hide emoji-div when loading page
         $('#emoji-div').hide();
         // Show/Hide emoji-div

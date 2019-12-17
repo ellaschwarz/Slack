@@ -88,7 +88,6 @@ function loadEmojiArray (arrayText) {
       emojiToShow.push(emoji.get(iterator))   
    }
 }
-///////////////////////////////////////////////////////////////////
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 let db = mongoose.connection;
@@ -137,11 +136,6 @@ db.on('error', err => {
 }).once('open', () => {
     console.log('Connection has been made to database');
     loadMongoUsersIntoArray();
-    /*     User.find({}).then(result => {
-            result.forEach(user => {
-                users.push(user);
-            });
-        }); */
 
     Room.find({}).then(result => {
         result.forEach(room => {
@@ -174,7 +168,6 @@ app.post('/upload', (req, res) => {
         }
         // User name here instead of myImage
     }).single('myImage');
-    //////////
 
 
     upload(req, res, (err) => {
@@ -221,7 +214,6 @@ app.get('/profil', checkAuthenticated, (req, res) => {
     res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id});
 });
 
-///////////////////////////
 
 
 app.post('/message', (req, res) => {
@@ -245,25 +237,6 @@ app.post('/message', (req, res) => {
         }
     });
 });
-
-// //Hanterar post-request
-// app.post('/message', async (req, res) => {
-//     let DB = req.db;
-//     let collection = DB.get('messages');
-//     collection.find(
-//         {'username': req.body.username},
-//         {}).then(user => {
-//             if(user[0]) {
-//                 if(user[0].password == req.body.password) {
-//                     res.send(true)
-//                 } else {
-//                     res.send(false)
-//                 } 
-//             } else {
-//                 res.send(false)
-//             }
-//     });
-// });
 
 app.get('/message', (req, res) => {
     let DB = req.db;
@@ -289,12 +262,6 @@ app.post('/login', /*checkNotAuthenticated,*/ passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
 }));
-
-// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-//     successRedirect: '/',
-//     failureRedirect: '/login',
-//     failureFlash: true
-// }));
 
 app.get('/register', /*checkNotAuthenticated,*/(req, res) => {
     res.render('register.ejs');
@@ -352,18 +319,6 @@ function loadMongoUsersIntoArray() {
 }
 
 io.on('connection', socket => {
-    /* socket.name = 'Random name';
-    console.log(socket.name);
-    
-    // Check for online sockets
-    setInterval(function() {
-        let clientsOnline = findClientsSocket();
-        clientsOnline.forEach(function(arrayItem) {
-            let x = arrayItem.id;
-            console.log('online: ' + x);
-        });
-        console.log('----------------------------');
-    }, 5000); */
 
     usersOnline++;
     io.sockets.emit('broadcastOnlineUsersConnect', { description: usersOnline + ' users online', id: socket.id });
@@ -388,8 +343,7 @@ io.on('connection', socket => {
                 }
                 usersOnlineArray2.push(userOnline);
             });
-            // console.log(usersOnlineArray2);
-            // console.log('----------------------------');
+            
             io.sockets.emit('all-connected-users', usersOnlineArray2);
         }, 1000);
     });
@@ -398,13 +352,7 @@ io.on('connection', socket => {
 
         usersOnline--;
         io.sockets.emit('broadcastOnlineUsersDisconnect', { description: usersOnline + ' users online', id: socket.id });
-        // Remove this user from usersOnlineArray
-        /* for (let i = 0; i < usersOnlineArray.length; i++) {
-            if (usersOnlineArray[i].id == socket.id) {
-                usersOnlineArray.splice(i, 1);
-                break;
-            }
-        } */
+
     });
 
     socket.on('msg', data => {
@@ -421,21 +369,6 @@ io.on('connection', socket => {
 
         message.save().then(() => console.log('Message saved'));
     });
-
-    //Private message
-    // socket.on('msg', data => {
-    //     // let socketId = users[data.receiver];
-    //     // Send message to users in room
-    //     io.to(data.room).emit('private-msg', { msg: data.message, user: data.usernameFrom });
-
-    //     let message = new Message({
-    //         user: data.usernameFrom,
-    //         room: data.room,
-    //         message_body: data.message
-    //     });
-
-    //     message.save().then(() => console.log('Message saved'));
-    // });
 
     socket.on('new-room', data => {
 
@@ -454,7 +387,6 @@ io.on('connection', socket => {
     });
 
     socket.on('room-entered', data => {
-        console.log('socket.id ' + socket.id);
         socket.leaveAll();
         socket.join(data.room);
         // Send message that someone joined the room
@@ -462,8 +394,6 @@ io.on('connection', socket => {
     });
 
     socket.on('create-private-room', data => {
-        console.log(data);
-        console.log(socket.id);
 
         // create private room
         let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
@@ -485,14 +415,10 @@ io.on('connection', socket => {
 
     //Join private room för den som är receiver
     socket.on('private-room-entered', data => {
-        console.log('socket.id ' + socket.id);
         socket.leaveAll();
         socket.join(data.room);
-        console.log(data);
         // Send message that someone joined the room
-        console.log('User joined private')
         socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
-        console.log()
     });
 
 });
