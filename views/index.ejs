@@ -220,21 +220,12 @@
                 document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
                 // Clear the text-input for new message
                 msgElement.value = '';
-            }
-             
+            }  
         }
 
-<<<<<<< HEAD
-
-
-        //Eventlistener on enter
-        let sendBtn = document.getElementById('sendBtn');
-        sendBtn.addEventListener('keyup', function (e) {
-=======
         // Eventlistener on enter
         let msgOnEnter = document.getElementById('message');
         msgOnEnter.addEventListener('keydown', function (e) {
->>>>>>> 1ddbc046e51e5974bdb23f36174efdca50408cd8
             if (e.keyCode === 13) {
                 sendMessage();
             }
@@ -293,14 +284,12 @@
         }
         // Enter room for private conversations ///////////////////////////////////////////////////////////////////////////////////////
 
-<<<<<<< HEAD
         function enterPrivateRoom(userClickedName, userClickedID) {
             let privatechat = document.getElementById('direct-message-list');
             let userFromName = document.getElementById('username').innerHTML;
             socket.emit('private-room-entered', {room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName})
             document.getElementById('message-container').innerHTML = '';
         }
-=======
         // for (let user of data) {
         //         let p = document.getElementById('p-username');
                     // console.log(p);
@@ -327,7 +316,6 @@
             $('#message').val(  textTemp  + emoCopy  )
         })
 
->>>>>>> 1ddbc046e51e5974bdb23f36174efdca50408cd8
 
     </script>
 </body>
