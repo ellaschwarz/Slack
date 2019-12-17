@@ -17,10 +17,10 @@
     <div class="slack">
         <div class="profilebar">
             
-            <div class="photo"
+            <a href="/profil"><div class="photo"
                 style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);">
                 <div class="online"></div>
-            </div>
+            </div></a>
             <h1 id="username"><%= name %></h1>
             <a href="/profil" type="button">Edit profile</a>
             <form action="/logout?_method=DELETE" method="POST">
