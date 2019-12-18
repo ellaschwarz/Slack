@@ -16,10 +16,10 @@
 <body>
     <div class="slack">
         <div class="profilebar">
-            
-            <a href="/profil" type="button" class="photo" style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);"></a>
+                <a href="/profil" class="photo" style="background-image: url(uploads/<%=userid%>.jpg);"></a>
             <span class="row"><i class="fas fa-circle"></i><h1 id="username"> <%= name %></h1></span> 
             <a href="/profil" type="button" id="editprofile">EDIT USER</a>
+
             <form action="/logout?_method=DELETE" method="POST">
                 <button type="submit" id="signout">SIGN OUT</button>
             </form>
@@ -74,17 +74,21 @@
                 </div>
                 
                 <div class="footer-chat" class="send-message-container">
-                    <span id="typing"></span>
-                    <div id="emoji-div">
-                        <% for(let i=0; i < emojis.length; i++) { %>
+                    <div class="pre-footer">
+                        <span id="typing"></span>
+                        <div id="emoji-div">
+                            <% for(let i=0; i < emojis.length; i++) { %>
                             <span class="emoji-class"><%= emojis[i] %></span>
-                        <% } %>
+                            <% } %>
+                        </div>
                     </div>
-                    <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
-                    <input id="message" class="write-message" placeholder="Type your message here" type="text">
-                    <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
-                    <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable"
-                        id="sendBtn" aria-hidden="true"></button>
+                    <div class="sub-footer">
+                        <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
+                        <input id="message" class="write-message" placeholder="Type your message here" type="text">
+                        <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
+                        <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable" id="sendBtn"
+                            aria-hidden="true"></button>
+                    </div>
 
                 </div>
             </div>
