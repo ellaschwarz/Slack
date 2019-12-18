@@ -50,43 +50,43 @@ initializePassport(
 );
 
 /////////////////////////// EMOJI DEL ////////////////////////////
-let emojiList = ['heart_eyes', 
-                'grin', 
-                'joy', 
-                'pensive',
-                'cry',
-                'rage',
-                'expressionless',
-                'zipper_mouth_face',
-                'money_mouth_face',
-                'face_with_thermometer',
-                'nerd_face',
-                'thinking_face',
-                'cold_sweat',
-                'scream',
-                'astonished',
-                'flushed',
-                'sleeping',
-                'dizzy_face',
-                'no_mouth',
-                'face_with_rolling_eyes',
-                'rolling_on_the_floor_laughing',
-                'woman-shrugging',
-                'man-shrugging',
-                'woman-facepalming',
-                'man-facepalming',
-                'see_no_evil',
-                'hear_no_evil',
-                'speak_no_evil',
-                'heartpulse']
+let emojiList = ['heart_eyes',
+    'grin',
+    'joy',
+    'pensive',
+    'cry',
+    'rage',
+    'expressionless',
+    'zipper_mouth_face',
+    'money_mouth_face',
+    'face_with_thermometer',
+    'nerd_face',
+    'thinking_face',
+    'cold_sweat',
+    'scream',
+    'astonished',
+    'flushed',
+    'sleeping',
+    'dizzy_face',
+    'no_mouth',
+    'face_with_rolling_eyes',
+    'rolling_on_the_floor_laughing',
+    'woman-shrugging',
+    'man-shrugging',
+    'woman-facepalming',
+    'man-facepalming',
+    'see_no_evil',
+    'hear_no_evil',
+    'speak_no_evil',
+    'heartpulse']
 let emojiToShow = []
 
 loadEmojiArray(emojiList)
 
-function loadEmojiArray (arrayText) {
-   for (const iterator of arrayText) {
-      emojiToShow.push(emoji.get(iterator))   
-   }
+function loadEmojiArray(arrayText) {
+    for (const iterator of arrayText) {
+        emojiToShow.push(emoji.get(iterator))
+    }
 }
 
 mongoose.connect('mongodb://localhost/Slack', { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
@@ -132,6 +132,7 @@ let usersOnline = 0;
 let usersOnlineArray2 = [];
 let messagesInThisRoom = [];
 let yourPrivateRooms = [];
+let privateRoomsCheck = [];
 
 db.on('error', err => {
     console.log('Connection error' + err);
@@ -145,17 +146,26 @@ db.on('error', err => {
         });
     });
 
+    // Private rooms check
+    PrivateRoom.find({}).then(result => {
+        result.forEach(privateRoom => {
+            yourPrivateRooms.push(privateRoom);
+            privateRoomsCheck.push(privateRoom.name);
+        });
+        console.log(yourPrivateRooms);
+    });
+
 });
+
 
 /////////////////////////////////
 app.post('/upload', (req, res) => {
     let user = req.user;
-    
+
     // Set storage engine
 
     const storage = multer.diskStorage({
         destination: './public/uploads/',
-        /// FIND A WAY TO NAME THE FILE username + user.id.
         filename: function (req, file, cb) {
             cb(null, user.username + '-' + user.id + path.extname(file.originalname));
         }
@@ -175,7 +185,7 @@ app.post('/upload', (req, res) => {
 
     upload(req, res, (err) => {
         if (err) {
-            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id});
+            res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id });
         } else {
             if (req.file == 'undefined') {
                 res.render('profil', {
@@ -199,7 +209,7 @@ app.post('/upload', (req, res) => {
 
 function checkFileType(file, cb) {
     // Allowed extensions
-    const filetypes = /jpg/;
+    const filetypes = /jpeg|jpg/;
     // check extension
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     // check Mime type
@@ -214,7 +224,7 @@ function checkFileType(file, cb) {
 
 app.get('/profil', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id});
+    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id });
 });
 
 
@@ -332,7 +342,29 @@ io.on('connection', socket => {
         }
         socket.name = user.name;
 
-        privateRoomsCheck(user.name);
+        /* // Private rooms check
+        yourPrivateRooms = [];
+        PrivateRoom.find({ users: user.name }).then(result => {
+            result.forEach(privateRoom => {
+                yourPrivateRooms.push(privateRoom.name);
+            });
+            console.log(yourPrivateRooms);
+
+            socket.emit('private-rooms-update', {privaterooms: yourPrivateRooms});
+        }); */
+
+
+        let yourActualprivateRooms = [];
+        for (let privateRoom of yourPrivateRooms) {
+            for (let user of privateRoom.users) {
+                if (user == socket.name) {
+                    console.log(privateRoom.name);
+                    yourActualprivateRooms.push(privateRoom.name);
+                }
+            }
+
+        }
+        socket.emit('private-rooms-update', { privaterooms: yourActualprivateRooms });
 
         // Check for online sockets
         setInterval(function () {
@@ -347,9 +379,9 @@ io.on('connection', socket => {
                 }
                 usersOnlineArray2.push(userOnline);
             });
-            
+
             io.sockets.emit('all-connected-users', usersOnlineArray2);
-        }, 1000);
+        }, 3000);
     });
 
     socket.on('disconnect', () => {
@@ -397,33 +429,41 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.user + ' joined the room');
         // GET ALL MESSAGES SAVED IN DATABASE
-        Message.find({room: `${data.room}`}).then(result => {
+        Message.find({ room: `${data.room}` }).then(result => {
             result.forEach(message => {
                 messagesInThisRoom.push(message);
             });
-            console.log(messagesInThisRoom);
-            socket.emit('print-messages', {messages: messagesInThisRoom});
+            socket.emit('print-messages', { messages: messagesInThisRoom });
         });
     });
 
     socket.on('create-private-room', data => {
+        // User clicked on his own name
+        if (data.usernameTo === data.usernameFrom) {
+            console.log('You cannot talk with yourself on the chat');
+        } else {
 
-        // create private room
-        let newPrivateRoomName = data.usernameTo + ' - ' + data.usernameFrom;
-        privateRooms.push(newPrivateRoomName);
-        // io.emit('room-set', data);
-        let privateroom = new PrivateRoom({
-            name: newPrivateRoomName,
-            users: [data.usernameTo, data.usernameFrom]
-        });
-        privateroom.save().then(() => {
-            console.log('PrivateRoom saved: ' + privateroom);
-        });
-        // emit to the 2 users
-        io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
-        io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
+            let newPrivateRoomName = compareStrings(data.usernameTo, data.usernameFrom);
 
-        //Join för den som skriver först
+            if (privateRoomsCheck.indexOf(newPrivateRoomName) > -1) {
+                console.log('Already exists!!!');
+            } else {
+                privateRoomsCheck.push(newPrivateRoomName);
+                // io.emit('room-set', data);
+                let privateroom = new PrivateRoom({
+                    name: newPrivateRoomName,
+                    users: [data.usernameTo, data.usernameFrom]
+                });
+                yourPrivateRooms.push(privateroom);
+
+                privateroom.save().then(() => {
+                    console.log('PrivateRoom saved: ' + privateroom);
+                });
+                // emit to the 2 users
+                io.to(`${socket.id}`).emit('private-room-set', newPrivateRoomName);
+                io.to(`${data.userId}`).emit('private-room-set', newPrivateRoomName);
+            }
+        }
 
     });
 
@@ -435,12 +475,12 @@ io.on('connection', socket => {
         // Send message that someone joined the room
         socket.to(data.room).emit('connect-to-room', data.usernameFrom + ' joined the private chat');
 
-        Message.find({room: `${data.room}`}).then(result => {
+        Message.find({ room: `${data.room}` }).then(result => {
             result.forEach(message => {
                 messagesInThisRoom.push(message);
             });
             console.log(messagesInThisRoom);
-            socket.emit('print-messages', {messages: messagesInThisRoom});
+            socket.emit('print-messages', { messages: messagesInThisRoom });
         });
     });
 
@@ -485,19 +525,20 @@ function findClientsSocket(roomID, namespace) {
     return res;
 }
 
-function emptyArrayMessages() {
-    messagesInThisRoom = [];
+function compareStrings(a, b) {
+    let str1 = a;
+    let str2 = b;
+    let n = str1.localeCompare(str2);
+    if (n == 1) {
+        return b + ' - ' + a;
+    }
+    else if (n == -1) {
+        return a + ' - ' + b;
+    }
 }
 
-function privateRoomsCheck(user) {
-    // Private rooms check
-    yourPrivateRooms = [];
-    PrivateRoom.find({users: user}).then(result => {
-        result.forEach(privateRoom => {
-            yourPrivateRooms.push(privateRoom.name);
-        });
-        console.log(yourPrivateRooms);
-    });
+function emptyArrayMessages() {
+    messagesInThisRoom = [];
 }
 
 http.listen(3000, () => {
