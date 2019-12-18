@@ -17,14 +17,11 @@
     <div class="slack">
         <div class="profilebar">
             
-            <a href="/profil"><div class="photo"
-                style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);">
-                <div class="online"></div>
-            </div></a>
-            <h1 id="username"><%= name %></h1>
-           <button> <a href="/profil" type="button">Edit profile</a></button>
+            <a href="/profil" type="button" class="photo" style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);"></a>
+            <h1 id="username"><span class="fas fa-circle"></span> <%= name %></h1>
+            <a href="/profil" type="button" id="editprofile">Edit profile</a>
             <form action="/logout?_method=DELETE" method="POST">
-                <button type="submit">Log Out</button>
+                <button type="submit" id="signout">Sign Out</button>
             </form>
 
             <div class="users">
@@ -170,7 +167,6 @@
             for (let user of data) {
                 let p = document.createElement('p');
                 p.setAttribute('class', 'list-online-users');
-                p.setAttribute('class', 'fas fa-user')
                 p.innerHTML = user.name;
                 p.value = user.id;
                 document.getElementById('list-online-users').appendChild(p);
