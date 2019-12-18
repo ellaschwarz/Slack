@@ -77,8 +77,9 @@
                     <div class="message">
         
                 </div>
-                <span id="typing"></span>
+                
                 <div class="footer-chat" class="send-message-container">
+                    <span id="typing"></span>
                     <div id="emoji-div">
                         <% for(let i=0; i < emojis.length; i++) { %>
                             <span class="emoji-class"><%= emojis[i] %></span>
@@ -186,6 +187,39 @@
                 /* console.log(message.user + ': ' + message.message_body); */
             });
         })
+
+        ////////////////////////////////////////////////////////////////////////////
+        //  Show when someone is typing
+
+        let textArea = document.getElementById('message')
+        let typing = document.getElementById('typing')
+
+        textArea.addEventListener('keyup', (e) => {
+
+            let user = document.getElementById('username').innerHTML;
+            let room = document.getElementById('room-name').innerHTML;
+
+            if (e.which === 13) {
+                // Send FALSE when presing ENTER
+                socket.emit('typingEvent', {user: user, room: room, status: false});
+            } else if (textArea.value == "") {
+                // Send FALSE when text has been deleted on textArea
+                socket.emit('typingEvent', {user: user, room: room, status: false});
+            } else {
+                // Send TRUE when user is typing
+                socket.emit('typingEvent', {user: user, room: room, status: true});
+            }
+        });
+
+        // Status TRUE: Show user typing / Status FALSE: Show nothing
+        socket.on('typingEvent', data => {
+            if (data.status)
+                typing.innerHTML = data.user + ' is typing...';
+            else
+                typing.innerHTML = '';
+        });        
+        ////////////////////////////////////////////////////////////////////////////
+
         //Function to send message in chat
         function sendMessage() {
             let msgElement = document.getElementById('message');
