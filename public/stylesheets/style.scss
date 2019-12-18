@@ -258,7 +258,9 @@ a {
   &:before {
     padding: 0 0.3rem;
   }
-  &--active,
+  &--active {
+    outline: none;
+  }
   &--active:hover {
     background: var(--active-item, #d3a625);
     color: var(--active-item-text, #680001);
@@ -272,8 +274,8 @@ p {
   &:hover {
     background: var(--hover-item, #be0002);
   }
-  &:focus {
-    background-color: var(--hover-item, #be0002);
+  &:focus,
+  &:active {
     outline: none;
   }
 }

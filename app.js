@@ -398,7 +398,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
 
         usersOnline--;
-        io.sockets.emit('broadcastOnlineUsersDisconnect', { description: 'f007 ' + usersOnline + ' users online', id: socket.id });
+        io.sockets.emit('broadcastOnlineUsersDisconnect', { description: usersOnline + ' users online', id: socket.id });
 
     });
 
