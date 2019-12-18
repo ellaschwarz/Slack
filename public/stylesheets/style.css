@@ -474,17 +474,28 @@ p:focus {
 
 .footer-chat {
   width: calc(100% - 0px);
-  height: 80px;
+  min-height: 80px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
   position: absolute;
   bottom: 0;
-  background-color: transparent;
+  background-color: #FFF;
   border-top: 2px solid #EEE;
   outline: none;
 }
 
+.pre-footer {
+  padding: 5px 0px 0px 10px;
+  width: calc(100% - 0px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .sub-footer {
+  height: 80px;
   width: calc(100% - 0px);
   display: flex;
   align-items: center;
