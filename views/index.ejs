@@ -54,9 +54,7 @@
             <div class="direct-messages">
                 <h2>Direct Messages</h2>   
                 <div id="direct-message-list">
-                    <% privaterooms.forEach(element => { %>
-                    <p><%=element%></p>
-                    <% }); %>
+                    
                 </div> 
             </div>
 
@@ -130,7 +128,6 @@
         var socket = io();
         var users = [];
         var usersOnline = [];
-
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
             if (e.target.parentElement.id == 'room-list') {
@@ -138,7 +135,6 @@
                 enterRoom(roomClicked);
             }
         });
-
         // addEventListener on online users list
         document.getElementById('list-online-users').addEventListener('click', e => {
             if (e.target.parentElement.id == 'list-online-users') {
@@ -147,7 +143,6 @@
                 startPrivate(userClickedName, userClickedID);
             }
         });
-
         //Eventlistener on private rooms
         document.getElementById('direct-message-list').addEventListener('click', e => {
             if (e.target.parentElement.id == 'direct-message-list') {
@@ -155,43 +150,46 @@
                 enterPrivateRoom(dmClicked)
             }   
         });
-
         socket.on('broadcastOnlineUsersConnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
             let name = document.getElementById('username').innerHTML;
             socket.emit('user-online', { id: data.id, name: name });
         });
-
         socket.on('broadcastOnlineUsersDisconnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
         });
-
         socket.on('newmsg', data => {
             console.log('incoming');
             if (users) {
                 document.getElementById('message-container').innerHTML += '<div>' + data.user + ': ' + data.msg + '</div>';
             }
         });
-
         socket.on('room-exists', data => {
             document.getElementById('error-container-room').innerHTML = data;
             setTimeout(() => {
                 document.getElementById('error-container-room').innerHTML = '';
             }, 4000);
         });
-
         socket.on('room-set', data => {
             document.getElementById('room-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
         });
-
         socket.on('private-room-set', data => {
             document.getElementById('direct-message-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
+        });
+
+        socket.on('private-rooms-update', data => {
+            document.getElementById('direct-message-list').innerHTML = '';
+            for (let privateroom of data.privaterooms) {
+                let p = document.createElement('p');
+                p.setAttribute('class', 'chatRoom');
+                p.innerHTML = privateroom;
+                document.getElementById('direct-message-list').appendChild(p);
+            }
         });
 
         socket.on('connect-to-room', data => {
             document.getElementById('message-container').innerHTML += '<div>' + data + '</div>';
         });
-
         socket.on('all-connected-users', data => {
             document.getElementById('list-online-users').innerHTML = '';
             for (let user of data) {
@@ -202,7 +200,6 @@
                 document.getElementById('list-online-users').appendChild(p);
             }
         });
-
         socket.on('print-messages', data => {
             console.log(data.messages);
             data.messages.forEach(message => {
@@ -217,7 +214,6 @@
             let msg = msgElement.value;
             let room = document.getElementById('room-name').innerHTML;
             let user = document.getElementById('username').innerHTML;
-
             if (msg) {
                 socket.emit('msg', { message: msg, user: user, room: room });
                 // Need to append the message here for the sender (`You: ${msg}`);
@@ -227,7 +223,6 @@
             }
              
         }
-
         // Eventlistener on enter
         let msgOnEnter = document.getElementById('message');
         msgOnEnter.addEventListener('keydown', function (e) {
@@ -235,14 +230,12 @@
                 sendMessage();
             }
         });
-
         function createRoom() {
             var newRoomName = document.getElementById('addRoom').value;
             if (newRoomName) {
                 socket.emit('new-room', newRoomName);
             }
         }
-
         function enterRoom(room) {
             let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
@@ -250,8 +243,6 @@
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
         }
-
-
         function startPrivate(userClickedName, userClickedID) {
             let userClicked = {
                 name: userClickedName,
@@ -260,33 +251,30 @@
             let userFromName = document.getElementById('username').innerHTML;
             console.log(userClicked);
             let user = document.getElementById('list-online-users').innerHTML;
-            // Change so that both users get new room name /////////////////////////////////
+            
             document.getElementById('room-name').innerHTML = userClickedName;
+            // Condition -> Create only if room name doesn't exist
             socket.emit('create-private-room', { room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
          
         }
-
         function enterPrivateRoom(dmClicked) {
             document.getElementById('room-name').innerHTML = dmClicked;
             let userFromName = document.getElementById('username').innerHTML;
             socket.emit('private-room-entered', {room: dmClicked, usernameFrom: userFromName});
             document.getElementById('message-container').innerHTML = '';
         }
-
         function printMessage(message) {
                 document.getElementById('message-container').innerHTML += '<div>' + message + '</div>';
             
         }
-
         // Hide emoji-div when loading page
         $('#emoji-div').hide();
         // Show/Hide emoji-div
         $('#big-smile').click(function(){
             $('#emoji-div').toggle('fast');
         })
-
         // Insert an emoji when clicking on one of them
         $('.emoji-class').click(function() {
             let emoCopy = $(this).clone()
@@ -295,8 +283,6 @@
             // Text content won't erase when inserting emoji
             $('#message').val(  textTemp  + emoCopy  )
         })
-
-
     </script>
 </body>
 
