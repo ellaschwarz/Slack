@@ -18,10 +18,10 @@
         <div class="profilebar">
             
             <a href="/profil" type="button" class="photo" style="background-image: url(uploads/<%=name%>-<%=userid%>.jpg);"></a>
-            <h1 id="username"><span class="fas fa-circle"></span> <%= name %></h1>
-            <a href="/profil" type="button" id="editprofile">Edit profile</a>
+            <span class="row"><i class="fas fa-circle"></i><h1 id="username"> <%= name %></h1></span> 
+            <a href="/profil" type="button" id="editprofile">EDIT USER</a>
             <form action="/logout?_method=DELETE" method="POST">
-                <button type="submit" id="signout">Sign Out</button>
+                <button type="submit" id="signout">SIGN OUT</button>
             </form>
 
             <div class="users">
@@ -39,7 +39,7 @@
             <div class="room-container" id="room-container">
                 <h2>Channels</h2>
                 <input id="addRoom" type="text" placeholder="Type a new room name">
-                <button type="button" onclick="createRoom()">Add</button>
+                <button type="button" class="create-room" onclick="createRoom()">Add</button>
                 <div id="error-container-room"></div>
                 <div id="room-list">
                     <% rooms.forEach(element => { %>

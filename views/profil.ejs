@@ -1,49 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=2.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="stylesheets/profile.css">
+    <script src="https://kit.fontawesome.com/3a12e18fd4.js" crossorigin="anonymous"></script>
     <title>Document</title>
     <style>
-        img {
+        /* img {
             width: 200px;
-        }
+        } */
     </style>
 </head>
+
 <body>
-    
-    <h1>Your profil</h1>
-    <img height="200px" width="200px" src="uploads/<%=username%>-<%=userid%>.jpg" alt="image here">
-    <form action="/profil" method="POST">
-    <div>
-         <label for="name">Name:</label>
-        <input type="text" id="name" value="<%= username %>" name="name" required>
-        <label for="email">Email:</label>
-        <input type="text" id="email" value="<%= useremail %>" name="email" required>
-    
-        <button type="submit">Update</button>
-    </div>
-    </form>
-    
-    <div class="container">
-        <h2>Change profile image</h2>
-        <%= typeof msg != 'undefined' ? msg : '' %>
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <div class="file-field input-field">
-                <div class="btn grey">
-                    <span>File</span>
-                    <input name="myImage" type="file">
+    <div class="edit-page">
+
+        <div class="bar">
+            <a href="/" type="button"> <i class="fas fa-arrow-left"></i> Back to Chat</a>
+        </div>
+
+        <div class="editbar">
+            <h1>Your profile</h1>
+            <img height="200px" width="200px" src="uploads/<%=username%>-<%=userid%>.jpg" alt="image here">
+            <form action="/profil" method="POST">
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" value="<%= username %>" name="name" required>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" value="<%= useremail %>" name="email" required>
+
+                    <button type="submit">Update</button>
                 </div>
-                <div class="file-path-wrapper">
-                    <input type="text" class="file-path validate">
-                </div>
+            </form>
+
+            <div class="container">
+                <h2>Change profile image</h2>
+                <%= typeof msg != 'undefined' ? msg : '' %>
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                    <div class="file-field input-field">
+                        <div class="btn grey">
+                            <span>File</span>
+                            <input name="myImage" type="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input type="text" class="file-path validate">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Save Changes</button>
+                </form>
+                <br>
+
             </div>
-            <button type="submit" class="btn">Submit</button>
-        </form>
-        <br>
-        <a href="/" type="button">Back to Chat</a>
+        </div>
     </div>
 
 </body>
+
 </html>

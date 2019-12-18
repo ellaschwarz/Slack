@@ -49,7 +49,7 @@ $item-spacing: 8px;
     
     @supports (display: grid) {
       display: grid;
-      grid-template-columns: 190px 250px 1fr;
+      grid-template-columns: 200px 250px 1fr;
       grid-template-rows: 1fr;
     }
   }
@@ -84,7 +84,6 @@ $item-spacing: 8px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(8, 1fr);
-
   }
 
   .profilebar form {
@@ -171,7 +170,6 @@ $item-spacing: 8px;
     border: 1px solid var(--text-color);
     background: none;
     padding: 5px;
-    margin: 3px;
     font-size: 12px;
     font-family: inherit;
     text-align: left;
@@ -179,10 +177,15 @@ $item-spacing: 8px;
     color: var(--text-color);
     text-decoration: none;
     height: 30%;
-    
+    width: 95%;
+    text-align: center;
+    &:hover {
+      color: var(--hover-item);
+      border: 2px solid var(--hover-item);
+    }
     
       &:focus,
-      &:hover,
+      
       &:active {
         outline: none;
       }
@@ -207,6 +210,30 @@ $item-spacing: 8px;
     border: 2px solid var(--text-color);
     background-color: rgba(29, 176, 184, 0.623);
     border-radius: 5px;
+  }
+
+  .create-room {
+    border: 1px solid var(--text-color);
+    background: none;
+    padding: 5px;
+    font-size: 12px;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-color);
+    text-decoration: none;
+    text-align: center;
+    &:hover {
+      color: var(--hover-item);
+      border: 2px solid var(--hover-item);
+    }
+    
+      &:focus,
+      
+      &:active {
+        outline: none;
+      }
+
   }
 
 
@@ -245,17 +272,13 @@ $item-spacing: 8px;
     align-items: center;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-
   }     
     span {
         opacity: 0.7;
       }
-      
       &:before {
         padding: 0 0.3rem;
       }
-    
-      
       &--active,
       &--active:hover {
         background: var(--active-item, #D3A625);
@@ -297,21 +320,6 @@ cursor: pointer;
         font-size: 0.6rem;
       }
       
-      &--online {
-        &:before {
-          content: "\f21b";
-          color: var(--active-presence, #00FFBA);
-        }
-      }
-      
-      &--slackbot {
-        &:before {
-          content: "\f141";
-          color: var(--active-presence, #00FFBA);
-          font-size: 0.75rem;
-        }
-      }
-      
       &--active {
         &.dm__button--online,
         &.dm__button--slackbot {
@@ -330,8 +338,6 @@ cursor: pointer;
     flex: 1;
     width: 200vh;
 
-    
-    
     &__header {
       position: absolute;
       top: 0;
@@ -408,66 +414,6 @@ cursor: pointer;
       line-height: 1.5rem;
     }
     
-    &__color-pickers {
-      position: relative;
-      display: flex;
-      flex-wrap: wrap;
-      width: 98%;
-    }
-    
-    &__color-field {
-      width: 100%;
-      display: flex;
-      margin-top: 0.25rem;
-      border: 1px solid #C5C5C5;
-      border-radius: .25rem;
-      padding: 0.25rem;
-    }
-    
-    &__themes {
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-    
-    &__colorpicker {
-      visibility: hidden;
-    }
-    
-    &__hexcode {
-      @extend %field;
-      flex: 1;
-      border: none;
-      min-width: 0;
-      
-      &:focus {
-        outline: none;
-      }
-    }
-    
-    &__share-input {
-      @extend %field;
-      display: block;
-      width: 100%;
-      padding: 0 .75rem;
-      margin: 0.25rem 0 5rem;
-      border: 1px solid #C5C5C5;
-      border-radius: .25rem;
-      height: 40px;
-      line-height: 40px;
-      
-      &:hover,
-      &:focus,
-      &:active {
-        border-color: #2780F8;
-        outline: none;
-      }
-      
-      &:focus {
-        box-shadow: 0 0 7px rgba(39,128,248,.15);
-      }
-    }
-    
     &__input-wrapper {
       width: 1.9rem;
       height: 1.9rem;
@@ -515,9 +461,7 @@ cursor: pointer;
     columns: black;
     font-family: "Lato", Helvetica, sans-serif;
     font-size: 25.5px;
-
   }
-
 
   .timer {
     margin-left: 15%;
@@ -562,8 +506,6 @@ cursor: pointer;
     right: 40px;
   }
 
- 
-  
   .chat .messages-chat {
     padding: 25px 35px;
   }
@@ -586,8 +528,6 @@ cursor: pointer;
       background-repeat: no-repeat;
       
   }
-
-
   
   .chat .messages-chat .text {
     margin: 0 35px;

@@ -1,13 +1,4 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700,900");
-.chat-container__hexcode, .chat-container__share-input {
-  text-transform: uppercase;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #555459;
-  padding: 0 0.5rem;
-  font-family: "Consolas", monaco, courier, monospace;
-}
-
 :root {
   --column-bg: #0D7E83;
   --menu-bg-hover: #076570;
@@ -48,8 +39,8 @@ body {
   .slack {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 190px 250px 1fr;
-        grid-template-columns: 190px 250px 1fr;
+    -ms-grid-columns: 200px 250px 1fr;
+        grid-template-columns: 200px 250px 1fr;
     -ms-grid-rows: 1fr;
         grid-template-rows: 1fr;
   }
@@ -138,7 +129,6 @@ a:focus, a:hover, a:active {
   border: 1px solid var(--text-color);
   background: none;
   padding: 5px;
-  margin: 3px;
   font-size: 12px;
   font-family: inherit;
   text-align: left;
@@ -146,9 +136,16 @@ a:focus, a:hover, a:active {
   color: var(--text-color);
   text-decoration: none;
   height: 30%;
+  width: 95%;
+  text-align: center;
 }
 
-.profilebar form #signout:focus, .profilebar form #signout:hover, .profilebar form #signout:active, .profilebar #editprofile:focus, .profilebar #editprofile:hover, .profilebar #editprofile:active {
+.profilebar form #signout:hover, .profilebar #editprofile:hover {
+  color: var(--hover-item);
+  border: 2px solid var(--hover-item);
+}
+
+.profilebar form #signout:focus, .profilebar form #signout:active, .profilebar #editprofile:focus, .profilebar #editprofile:active {
   outline: none;
 }
 
@@ -171,6 +168,28 @@ a:focus, a:hover, a:active {
   border: 2px solid var(--text-color);
   background-color: rgba(29, 176, 184, 0.623);
   border-radius: 5px;
+}
+
+.create-room {
+  border: 1px solid var(--text-color);
+  background: none;
+  padding: 5px;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-color);
+  text-decoration: none;
+  text-align: center;
+}
+
+.create-room:hover {
+  color: var(--hover-item);
+  border: 2px solid var(--hover-item);
+}
+
+.create-room:focus, .create-room:active {
+  outline: none;
 }
 
 .room-container,
@@ -272,17 +291,6 @@ p:focus {
   font-size: 0.6rem;
 }
 
-.users__button--online:before {
-  content: "\f21b";
-  color: var(--active-presence, #00FFBA);
-}
-
-.users__button--slackbot:before {
-  content: "\f141";
-  color: var(--active-presence, #00FFBA);
-  font-size: 0.75rem;
-}
-
 .users__button--active.dm__button--online:before, .users__button--active.dm__button--slackbot:before {
   color: var(--active-item-text, #680001);
 }
@@ -377,73 +385,6 @@ p:focus {
   display: block;
   font-size: 1.05rem;
   line-height: 1.5rem;
-}
-
-.chat-container__color-pickers {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  width: 98%;
-}
-
-.chat-container__color-field {
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  margin-top: 0.25rem;
-  border: 1px solid #C5C5C5;
-  border-radius: .25rem;
-  padding: 0.25rem;
-}
-
-.chat-container__themes {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  margin-top: 1rem;
-}
-
-.chat-container__colorpicker {
-  visibility: hidden;
-}
-
-.chat-container__hexcode {
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  border: none;
-  min-width: 0;
-}
-
-.chat-container__hexcode:focus {
-  outline: none;
-}
-
-.chat-container__share-input {
-  display: block;
-  width: 100%;
-  padding: 0 .75rem;
-  margin: 0.25rem 0 5rem;
-  border: 1px solid #C5C5C5;
-  border-radius: .25rem;
-  height: 40px;
-  line-height: 40px;
-}
-
-.chat-container__share-input:hover, .chat-container__share-input:focus, .chat-container__share-input:active {
-  border-color: #2780F8;
-  outline: none;
-}
-
-.chat-container__share-input:focus {
-  -webkit-box-shadow: 0 0 7px rgba(39, 128, 248, 0.15);
-          box-shadow: 0 0 7px rgba(39, 128, 248, 0.15);
 }
 
 .chat-container__input-wrapper {
