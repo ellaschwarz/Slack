@@ -22,14 +22,14 @@
                 <div class="online"></div>
             </div></a>
             <h1 id="username"><%= name %></h1>
-            <a href="/profil" type="button">Edit profile</a>
+           <button> <a href="/profil" type="button">Edit profile</a></button>
             <form action="/logout?_method=DELETE" method="POST">
                 <button type="submit">Log Out</button>
             </form>
 
             <div class="users">
                 <div id="online-users"></div> <br>
-                <div id="list-online-users">
+                <div id="list-online-users" tabindex="1">
 
                 </div>
             </div>
@@ -75,35 +75,7 @@
                 <div id="message-container"></div>
                 <div class="messages-chat">
                     <div class="message">
-                        <div class="photo"
-                            style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
-                            <div class="online"></div>
-                        </div>
-                        <p class="text"> </p>
-                    </div>
-                    <div class="message text-only">
-                        <p class="text"> </p>
-                    </div>
-                    <p class="time"> 14h58</p>
-                    <div class="message text-only">
-                        <div class="response">
-                            <p class="text"> </p>
-                        </div>
-                    </div>
-                    <div class="message text-only">
-                        <div class="response">
-                            <p class="text"> </p>
-                        </div>
-                    </div>
-                    <p class="response-time time"> 15h04</p>
-                    <div class="message">
-                        <div class="photo"
-                            style="background-image: url(https://image.noelshack.com/fichiers/2017/38/2/1505775062-1505606859-portrait-1961529-960-720.jpg);">
-                            <div class="online"></div>
-                        </div>
-                        <p class="text"></p>
-                    </div>
-                    <p class="time"> 15h09</p>
+        
                 </div>
                 <span id="typing"></span>
                 <div class="footer-chat" class="send-message-container">
@@ -197,11 +169,14 @@
             for (let user of data) {
                 let p = document.createElement('p');
                 p.setAttribute('class', 'list-online-users');
+                p.setAttribute('class', 'fas fa-user')
                 p.innerHTML = user.name;
                 p.value = user.id;
                 document.getElementById('list-online-users').appendChild(p);
             }
         });
+
+  
 
         socket.on('print-messages', data => {
             console.log(data.messages);
@@ -267,18 +242,12 @@
          
         }
 
-<<<<<<< HEAD
-        function enterPrivateRoom(userClickedName, userClickedID) {
-            let privatechat = document.getElementById('direct-message-list');
-=======
         function enterPrivateRoom(dmClicked) {
             document.getElementById('room-name').innerHTML = dmClicked;
->>>>>>> fe1fa8bccddc993aa797082a773f2393935ff15f
             let userFromName = document.getElementById('username').innerHTML;
             socket.emit('private-room-entered', {room: dmClicked, usernameFrom: userFromName});
             document.getElementById('message-container').innerHTML = '';
         }
-<<<<<<< HEAD
         // for (let user of data) {
         //         let p = document.getElementById('p-username');
                     // console.log(p);
@@ -289,14 +258,12 @@
         //         let userClicked = e.target.innerHTML;
 
         
-=======
 
         function printMessage(message) {
                 document.getElementById('message-container').innerHTML += '<div>' + message + '</div>';
             
         }
 
->>>>>>> fe1fa8bccddc993aa797082a773f2393935ff15f
         // Hide emoji-div when loading page
         $('#emoji-div').hide();
         // Show/Hide emoji-div
