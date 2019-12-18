@@ -550,23 +550,41 @@ cursor: pointer;
   
   .footer-chat {
     width: calc(100% - 0px);
-    height: 80px;
+    min-height: 80px;
     display:flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
     position:absolute;
     bottom: 0;
-    background-color: transparent;
+    background-color: #FFF;
     border-top: 2px solid #EEE;
     outline: none;
   }
+
+  .pre-footer {
+    //min-height: 20px;
+    padding: 5px 0px 0px 10px;
+    width: calc(100% - 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sub-footer {
+    height: 80px;
+    width: calc(100% - 0px);
+    display:flex;
+    align-items: center;
+  }
   
-  .chat .footer-chat .icon {
+  .chat .footer-chat .sub-footer .icon {
     margin-left: 30px;
     color:#C0C0C0;
     font-size: 14pt;
   }
   
-  .chat .footer-chat .send {
+  .chat .footer-chat .sub-footer .send {
     color:#fff;
     background-color: #4f6ebd;
     position: absolute;
@@ -576,7 +594,7 @@ cursor: pointer;
     font-size: 14pt;
   }
   
-  .chat .footer-chat .name {
+  .chat .footer-chat .sub-footer .name {
     margin: 0 0 0 20px;
     text-transform: uppercase;
     font-family:'Montserrat', sans-serif;
@@ -584,7 +602,7 @@ cursor: pointer;
     color:#515151;
   }
   
-  .chat .footer-chat .right {
+  .chat .footer-chat .sub-footer .right {
     position: absolute;
     right: 40px;
   }
@@ -596,6 +614,8 @@ cursor: pointer;
     margin-left: 20px;
     padding: 10px;
   }
+
+
   
   .footer-chat *::-webkit-input-placeholder {
     color: #C0C0C0;
