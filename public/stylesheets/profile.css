@@ -64,7 +64,11 @@ body {
   text-decoration: none;
 }
 
-.edit-page .bar a:focus, .edit-page .bar a:hover, .edit-page .bar a:active {
+.edit-page .bar a:hover {
+  border: 2px solid var(--hover-item);
+}
+
+.edit-page .bar a:focus, .edit-page .bar a:active {
   outline: none;
 }
 
@@ -74,34 +78,82 @@ body {
   grid-column: 2/3;
   -ms-grid-row: 1;
   grid-row: 1;
-  padding: 15%;
+  padding: 10%;
   display: -ms-grid;
   display: grid;
-  -ms-grid-rows: (1fr)[4];
-      grid-template-rows: repeat(4, 1fr);
+  -ms-grid-rows: 100px 1fr 150px 1fr;
+      grid-template-rows: 100px 1fr 150px 1fr;
   -ms-grid-columns: 1fr 1fr;
       grid-template-columns: 1fr 1fr;
 }
 
-.edit-page .editbar img {
-  display: block;
-  width: 200px;
-  height: 200px;
-  border-radius: 100px;
-  -o-object-fit: contain;
-     object-fit: contain;
+.edit-page .editbar h1 {
   -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
-  grid-column: 1/2;
-  -ms-grid-row: 2;
-  grid-row: 2;
+  -ms-grid-column-span: 2;
+  grid-column: 1/3;
+  -ms-grid-row: 1;
+  grid-row: 1;
+  text-align: center;
 }
 
-.edit-page .editbar button {
+.edit-page .editbar .container {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-column: 1/3;
+  -ms-grid-row: 3;
+  grid-row: 3;
+  text-align: center;
+}
+
+.edit-page .editbar img {
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: 100px;
+  -o-object-fit: fill;
+     object-fit: fill;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-column: 1/3;
+  -ms-grid-row: 2;
+  grid-row: 2;
+  margin: auto;
+  margin-bottom: 30px;
+}
+
+.edit-page .editbar .nameemail {
   -ms-grid-column: 1;
   -ms-grid-column-span: 2;
   grid-column: 1/3;
   -ms-grid-row: 4;
   grid-row: 4;
+  text-align: center;
+}
+
+.edit-page .editbar #save {
+  border: 1px solid var(--text-color);
+  background: var(--hover-item);
+  padding: 5px;
+  margin: 30px;
+  font-size: 18px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.edit-page .editbar #save:hover {
+  border: 2px solid var(--hover-item);
+}
+
+.edit-page .editbar #save:focus, .edit-page .editbar #save:active {
+  outline: none;
+}
+
+.edit-page .editbar input {
+  border: 1px solid lightgray;
+  padding: 5px;
+  border-radius: 5px;
 }
 /*# sourceMappingURL=profile.css.map */

@@ -16,8 +16,10 @@
 <body>
     <div class="slack">
         <div class="profilebar">
-                <a href="/profil" class="photo" style="background-image: url(uploads/<%=userid%>.jpg);"></a>
-            <span class="row"><i class="fas fa-circle"></i><h1 id="username"> <%= name %></h1></span> 
+            <a href="/profil" class="photo" style="background-image: url(uploads/<%=userid%>.jpg);"></a>
+            <span class="row">
+                <h1 id="username"> <%= name %></h1>
+            </span>
             <a href="/profil" type="button" id="editprofile">EDIT USER</a>
 
             <form action="/logout?_method=DELETE" method="POST">
@@ -27,19 +29,15 @@
             <div class="users">
                 <div id="online-users"></div> <br>
                 <div id="list-online-users" tabindex="1">
-
                 </div>
             </div>
-
         </div>
 
-
-        <!-- <div class="container"> -->
         <div class="sidebar">
             <div class="room-container" id="room-container">
                 <h2>Channels</h2>
                 <input id="addRoom" type="text" placeholder="Type a new room name">
-                <button type="button" class="create-room" onclick="createRoom()">Add</button>
+                <button type="button" class="create-room" onclick="createRoom()"><i class="fas fa-plus"></i></button>
                 <div id="error-container-room"></div>
                 <div id="room-list">
                     <% rooms.forEach(element => { %>
@@ -49,13 +47,11 @@
             </div>
 
             <div class="direct-messages">
-                <h2>Direct Messages</h2>   
-                <div id="direct-message-list">
-                    
-                </div> 
+                <h2>Direct Messages</h2>
+                <div id="direct-message-list"></div>
             </div>
-
         </div>
+
         <section class="chat">
             <div class="chat-container">
                 <div class="header-chat">
@@ -66,32 +62,31 @@
                     <i class="icon clickable fa fa-ellipsis-h right" aria-hidden="true"></i>
                 </div>
 
-
                 <div id="message-container"></div>
                 <div class="messages-chat">
-                    <div class="message">
-        
-                </div>
-                
-                <div class="footer-chat" class="send-message-container">
-                    <div class="pre-footer">
-                        <span id="typing"></span>
-                        <div id="emoji-div">
-                            <% for(let i=0; i < emojis.length; i++) { %>
-                            <span class="emoji-class"><%= emojis[i] %></span>
-                            <% } %>
+                    <div class="message"></div>
+
+                    <div class="footer-chat" class="send-message-container">
+                        <div class="pre-footer">
+                            <span id="typing"></span>
+                            <div id="emoji-div">
+                                <% for(let i=0; i < emojis.length; i++) { %>
+                                <span class="emoji-class"><%= emojis[i] %></span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="sub-footer">
+                            <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"
+                                id="big-smile"></i>
+                            <input id="message" class="write-message" placeholder="Type your message here" type="text">
+                            <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
+                            <button type="button" onclick="sendMessage()"
+                                class="icon send fa fa-paper-plane-o clickable" id="sendBtn"
+                                aria-hidden="true"></button>
                         </div>
                     </div>
-                    <div class="sub-footer">
-                        <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true" id="big-smile"></i>
-                        <input id="message" class="write-message" placeholder="Type your message here" type="text">
-                        <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true"></i>
-                        <button type="button" onclick="sendMessage()" class="icon send fa fa-paper-plane-o clickable" id="sendBtn"
-                            aria-hidden="true"></button>
-                    </div>
-
                 </div>
-            </div>
         </section>
     </div>
     </div>
@@ -102,6 +97,7 @@
         var socket = io();
         var users = [];
         var usersOnline = [];
+
         // addEventlistener on room list
         document.getElementById('room-list').addEventListener('click', e => {
             if (e.target.parentElement.id == 'room-list') {
@@ -109,6 +105,7 @@
                 enterRoom(roomClicked);
             }
         });
+
         // addEventListener on online users list
         document.getElementById('list-online-users').addEventListener('click', e => {
             if (e.target.parentElement.id == 'list-online-users') {
@@ -117,36 +114,43 @@
                 startPrivate(userClickedName, userClickedID);
             }
         });
+
         //Eventlistener on private rooms
         document.getElementById('direct-message-list').addEventListener('click', e => {
             if (e.target.parentElement.id == 'direct-message-list') {
                 let dmClicked = e.target.innerHTML;
                 enterPrivateRoom(dmClicked)
-            }   
+            }
         });
+
         socket.on('broadcastOnlineUsersConnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
             let name = document.getElementById('username').innerHTML;
             socket.emit('user-online', { id: data.id, name: name });
         });
+
         socket.on('broadcastOnlineUsersDisconnect', data => {
             document.getElementById('online-users').innerHTML = data.description;
         });
+
         socket.on('newmsg', data => {
             console.log('incoming');
             if (users) {
                 document.getElementById('message-container').innerHTML += '<div>' + data.user + ': ' + data.msg + '</div>';
             }
         });
+
         socket.on('room-exists', data => {
             document.getElementById('error-container-room').innerHTML = data;
             setTimeout(() => {
                 document.getElementById('error-container-room').innerHTML = '';
             }, 4000);
         });
+
         socket.on('room-set', data => {
             document.getElementById('room-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
         });
+
         socket.on('private-room-set', data => {
             document.getElementById('direct-message-list').innerHTML += '<p class="chatRoom">' + data + '</p>';
         });
@@ -164,6 +168,7 @@
         socket.on('connect-to-room', data => {
             document.getElementById('message-container').innerHTML += '<div>' + data + '</div>';
         });
+
         socket.on('all-connected-users', data => {
             document.getElementById('list-online-users').innerHTML = '';
             for (let user of data) {
@@ -175,8 +180,6 @@
             }
         });
 
-  
-
         socket.on('print-messages', data => {
             console.log(data.messages);
             data.messages.forEach(message => {
@@ -184,7 +187,7 @@
                 printMessage(p);
                 /* console.log(message.user + ': ' + message.message_body); */
             });
-        })
+        });
 
         ////////////////////////////////////////////////////////////////////////////
         //  Show when someone is typing
@@ -199,13 +202,13 @@
 
             if (e.which === 13) {
                 // Send FALSE when presing ENTER
-                socket.emit('typingEvent', {user: user, room: room, status: false});
+                socket.emit('typingEvent', { user: user, room: room, status: false });
             } else if (textArea.value == "") {
                 // Send FALSE when text has been deleted on textArea
-                socket.emit('typingEvent', {user: user, room: room, status: false});
+                socket.emit('typingEvent', { user: user, room: room, status: false });
             } else {
                 // Send TRUE when user is typing
-                socket.emit('typingEvent', {user: user, room: room, status: true});
+                socket.emit('typingEvent', { user: user, room: room, status: true });
             }
         });
 
@@ -215,7 +218,7 @@
                 typing.innerHTML = data.user + ' is typing...';
             else
                 typing.innerHTML = '';
-        });        
+        });
         ////////////////////////////////////////////////////////////////////////////
 
         //Function to send message in chat
@@ -230,8 +233,9 @@
                 document.getElementById('message-container').innerHTML += '<div>You: ' + msg + '</div>';
                 // Clear the text-input for new message
                 msgElement.value = '';
-            }  
-        }
+            }
+        };
+
         // Eventlistener on enter
         let msgOnEnter = document.getElementById('message');
         msgOnEnter.addEventListener('keydown', function (e) {
@@ -239,19 +243,22 @@
                 sendMessage();
             }
         });
+
         function createRoom() {
             var newRoomName = document.getElementById('addRoom').value;
             if (newRoomName) {
                 socket.emit('new-room', newRoomName);
             }
-        }
+        };
+
         function enterRoom(room) {
             let user = document.getElementById('username').innerHTML;
             document.getElementById('room-name').innerHTML = room;
             socket.emit('room-entered', { room: room, user: user });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
-        }
+        };
+
         function startPrivate(userClickedName, userClickedID) {
             let userClicked = {
                 name: userClickedName,
@@ -260,38 +267,42 @@
             let userFromName = document.getElementById('username').innerHTML;
             console.log(userClicked);
             let user = document.getElementById('list-online-users').innerHTML;
-            
+
             document.getElementById('room-name').innerHTML = userClickedName;
             // Condition -> Create only if room name doesn't exist
             socket.emit('create-private-room', { room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName });
             // Clear messages
             document.getElementById('message-container').innerHTML = '';
-         
-        }
+
+        };
+
         function enterPrivateRoom(dmClicked) {
             document.getElementById('room-name').innerHTML = dmClicked;
             let userFromName = document.getElementById('username').innerHTML;
-            socket.emit('private-room-entered', {room: dmClicked, usernameFrom: userFromName});
+            socket.emit('private-room-entered', { room: dmClicked, usernameFrom: userFromName });
             document.getElementById('message-container').innerHTML = '';
-        }
+        };
+
         function printMessage(message) {
-                document.getElementById('message-container').innerHTML += '<div>' + message + '</div>';
-            
-        }
+            document.getElementById('message-container').innerHTML += '<div>' + message + '</div>';
+
+        };
+
         // Hide emoji-div when loading page
         $('#emoji-div').hide();
         // Show/Hide emoji-div
-        $('#big-smile').click(function(){
+        $('#big-smile').click(function () {
             $('#emoji-div').toggle('fast');
         })
         // Insert an emoji when clicking on one of them
-        $('.emoji-class').click(function() {
+        $('.emoji-class').click(function () {
             let emoCopy = $(this).clone()
             emoCopy = emoCopy.text()
             textTemp = $('#message').val()
             // Text content won't erase when inserting emoji
-            $('#message').val(  textTemp  + emoCopy  )
-        })
+            $('#message').val(textTemp + emoCopy)
+        });
+
     </script>
 </body>
 

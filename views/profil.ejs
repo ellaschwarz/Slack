@@ -25,19 +25,21 @@
         <div class="editbar">
             <h1>Your profile</h1>
             <img height="200px" width="200px" src="uploads/<%=userid%>.jpg" alt="image here">
+
+            <div class="nameemail">
             <form action="/profil" method="POST">
-                <div>
+                
                     <label for="name">Name:</label>
                     <input type="text" id="name" value="<%= username %>" name="name" required>
                     <label for="email">Email:</label>
                     <input type="text" id="email" value="<%= useremail %>" name="email" required>
-
-                    <button type="submit">Update</button>
-                </div>
+                    <br>
+                    <button type="submit" id="save">Save changes</button>
             </form>
+        </div>
 
             <div class="container">
-                <h2>Change profile image</h2>
+                <h3>Change profile image</h3>
                 <%= typeof msg != 'undefined' ? msg : '' %>
                 <form action="/upload" method="POST" enctype="multipart/form-data">
                     <div class="file-field input-field">
@@ -46,10 +48,10 @@
                             <input name="myImage" type="file">
                         </div>
                         <div class="file-path-wrapper">
-                            <input type="text" class="file-path validate">
+                            <input type="text" class="file-path validate" hidden>
                         </div>
                     </div>
-                    <button type="submit" class="btn">Save Changes</button>
+                    <button type="submit" class="btn">Upload</button>
                 </form>
                 <br>
 
