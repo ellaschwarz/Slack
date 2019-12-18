@@ -559,14 +559,20 @@ cursor: pointer;
     border-top: 2px solid #EEE;
     outline: none;
   }
+
+  .sub-footer {
+    width: calc(100% - 0px);
+    display:flex;
+    align-items: center;
+  }
   
-  .chat .footer-chat .icon {
+  .chat .footer-chat .sub-footer .icon {
     margin-left: 30px;
     color:#C0C0C0;
     font-size: 14pt;
   }
   
-  .chat .footer-chat .send {
+  .chat .footer-chat .sub-footer .send {
     color:#fff;
     background-color: #4f6ebd;
     position: absolute;
@@ -576,7 +582,7 @@ cursor: pointer;
     font-size: 14pt;
   }
   
-  .chat .footer-chat .name {
+  .chat .footer-chat .sub-footer .name {
     margin: 0 0 0 20px;
     text-transform: uppercase;
     font-family:'Montserrat', sans-serif;
@@ -584,7 +590,7 @@ cursor: pointer;
     color:#515151;
   }
   
-  .chat .footer-chat .right {
+  .chat .footer-chat .sub-footer .right {
     position: absolute;
     right: 40px;
   }
