@@ -484,6 +484,13 @@ io.on('connection', socket => {
         });
     });
 
+    // Show when someone is typing
+    socket.on('typingEvent', data => {
+        console.log(data)
+        console.log('Someone is writing' + data.room + ' ' + data.user + ' ' + data.status)
+        socket.to(data.room).emit('typingEvent', { user: data.user, status: data.status });
+    });
+
 });
 
 function checkAuthenticated(req, res, next) {
