@@ -167,7 +167,7 @@ app.post('/upload', (req, res) => {
     const storage = multer.diskStorage({
         destination: './public/uploads/',
         filename: function (req, file, cb) {
-            cb(null, user.username + '-' + user.id + path.extname(file.originalname));
+            cb(null, user.id + path.extname(file.originalname));
         }
     });
 
@@ -224,9 +224,20 @@ function checkFileType(file, cb) {
 
 app.get('/profil', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profil.ejs', { username: user.username, useremail: user.email, useractualpassword: user.password, userid: user.id });
+    res.render('profil.ejs', { username: user.username, useremail: user.email, userid: user.id });
 });
 
+app.post('/profil', (req, res) => {
+    console.log(req.body);
+    console.log(req.user.username);
+    
+   User.update({username: req.user.username}, {
+        username: req.body.name,
+        email: req.body.email,
+    }).then(() => console.log('User info modified'));
+    
+    res.render('index', {name: req.body.name, rooms: rooms, userid: req.user.id, emojis: emojiToShow, privaterooms: yourPrivateRooms});
+});
 
 
 app.post('/message', (req, res) => {
