@@ -268,7 +268,6 @@
             console.log(userClicked);
             let user = document.getElementById('list-online-users').innerHTML;
 
-            document.getElementById('room-name').innerHTML = userClickedName;
             // Condition -> Create only if room name doesn't exist
             socket.emit('create-private-room', { room: userClickedName, usernameTo: userClickedName, userId: userClickedID, usernameFrom: userFromName });
             // Clear messages

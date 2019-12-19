@@ -187,6 +187,7 @@ app.post('/upload', (req, res) => {
         if (err) {
             res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id });
         } else {
+            console.log(req.file);
             if (req.file == 'undefined') {
                 res.render('profil', {
                     msg: 'Error: No File Selected!',
