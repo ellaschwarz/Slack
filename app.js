@@ -224,15 +224,17 @@ function checkFileType(file, cb) {
 }
 
 app.get('/profil', checkAuthenticated, (req, res) => {
-    let user = req.user;
-    res.render('profil.ejs', { username: user.username, useremail: user.email, userid: user.id });
+
+    User.find({_id: req.user.id}).then(result => {
+        res.render('profil.ejs', { username: result[0].username, useremail: result[0].email, userid: result[0]._id,  });
+    });
 });
 
 app.post('/profil', (req, res) => {
     console.log(req.body);
     console.log(req.user.username);
     
-   User.update({username: req.user.username}, {
+   User.update({_id: req.user.id}, {
         username: req.body.name,
         email: req.body.email,
     }).then(() => console.log('User info modified'));
