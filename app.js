@@ -295,7 +295,7 @@ app.post('/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         let user = new User({
-            username: req.body.username,
+            username: req.body.name,
             email: req.body.email,
             password: hashedPassword
         });
@@ -399,7 +399,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
 
         usersOnline--;
-        io.sockets.emit('broadcastOnlineUsersDisconnect', { description: 'f007 ' + usersOnline + ' users online', id: socket.id });
+        io.sockets.emit('broadcastOnlineUsersDisconnect', { description: usersOnline + ' users online', id: socket.id });
 
     });
 
