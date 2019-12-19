@@ -188,7 +188,7 @@ app.post('/upload', (req, res) => {
             res.render('profil', { msg: err, username: user.username, useremail: user.email, userid: user.id });
         } else {
             console.log(req.file);
-            if (req.file == 'undefined') {
+            if (req.file == undefined) {
                 res.render('profil', {
                     msg: 'Error: No File Selected!',
                     username: user.username,
@@ -237,7 +237,7 @@ app.post('/profil', (req, res) => {
         email: req.body.email,
     }).then(() => console.log('User info modified'));
     
-    res.render('index', {name: req.body.name, rooms: rooms, userid: req.user.id, emojis: emojiToShow, privaterooms: yourPrivateRooms});
+    res.render('profil', {username: req.body.name, useremail: req.body.email, userid: req.user.id});
 });
 
 
@@ -274,7 +274,11 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index', { name: req.user.username, rooms: rooms, userid: req.user.id, emojis: emojiToShow, privaterooms: yourPrivateRooms });
+    User.find({_id: req.user.id}).then(result => {
+        res.render('index', { name: result[0].username, rooms: rooms, userid: result[0].id, emojis: emojiToShow, privaterooms: yourPrivateRooms });
+    });
+
+    
 });
 
 app.get('/login', /*checkNotAuthenticated,*/(req, res) => {
